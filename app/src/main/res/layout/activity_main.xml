@@ -54,10 +54,17 @@
         android:layout_width="324dp"
         android:layout_height="35dp"
         android:layout_marginTop="68dp"
+        android:queryHint="Buscar recetas..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recetasCarrousel" />
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/searchView" />
 
     <ImageView
         android:id="@+id/recetasCarrousel"
