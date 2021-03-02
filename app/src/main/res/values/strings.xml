@@ -1,12 +1,6 @@
 <resources>
     <string name="app_name">AplicacionRecetas</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Nombre de usuario</string>
-    <string name="prompt_password">Contraseña</string>
-    <string name="action_sign_in">Iniciar sesión</string>
-    <string name="action_sign_in_short">Iniciar sesión</string>
-    <string name="welcome">"Bienvenido/a!"</string>
-    <string name="invalid_username">Nombre de usuario no válido.</string>
-    <string name="invalid_password">La contraseña debe tener >8 caracteres.</string>
-    <string name="login_failed">"Inicio de sesión fallido."</string>
+    <string name="nomUsuario">Nombre de usuario</string>
+    <string name="contrasena">Contraseña</string>
 </resources>

@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AplicacionRecetas">
-        <activity android:name=".IniciarSesion"></activity>
+        <activity android:name=".UsuarioPerfil"></activity>
+        <activity android:name=".RegistrarUsuario" />
+        <activity android:name=".IniciarSesion" />
         <activity android:name=".AnadirReceta" />
         <activity
             android:name=".ui.login.LoginActivity"

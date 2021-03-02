@@ -16,14 +16,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        iniciarSesion = true;
+        iniciarSesion = false;
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarCerrar = findViewById(R.id.botonRegistrarCerrar);
 
         if (!iniciarSesion) {
             iniciarAdd.setText("Iniciar sesión");
-            registrarCerrar.setText("Resgistrarse");
+            registrarCerrar.setText("Registrarse");
         } else {
             iniciarAdd.setText("Añadir receta");
             registrarCerrar.setText("Cerrar sesión");
@@ -43,13 +43,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Intent iRegistro = new Intent(this, RegistrarUsuario.class);
+
         registrarCerrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!iniciarSesion) {
-
+                    startActivity(iRegistro);
                 } else {
-
+                    iniciarSesion = false;
+                    iniciarAdd.setText("Iniciar sesión");
+                    registrarCerrar.setText("Registrarse");
                 }
             }
         });

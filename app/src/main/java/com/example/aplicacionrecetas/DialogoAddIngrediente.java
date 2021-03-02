@@ -29,7 +29,7 @@ public class DialogoAddIngrediente extends DialogFragment {
         builder.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                EditText cajaIngrediente = getDialog().findViewById(R.id.ingrediente);
+                EditText cajaIngrediente = getDialog().findViewById(R.id.nombreUsuario);
                 String ingrediente = cajaIngrediente.getText().toString();
                 anadirReceta.putExtra("ingrediente", ingrediente);
                 getActivity().startActivity(anadirReceta);
