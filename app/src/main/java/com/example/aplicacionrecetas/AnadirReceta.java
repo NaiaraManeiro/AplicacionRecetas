@@ -1,8 +1,14 @@
 package com.example.aplicacionrecetas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -59,6 +65,8 @@ public class AnadirReceta extends AppCompatActivity {
         });
 
         Button anadirReceta = findViewById(R.id.botonAddReceta);
+        NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this, "IdCanal");
 
         anadirReceta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +75,22 @@ public class AnadirReceta extends AppCompatActivity {
                 String nombreReceta = cajaNombreReceta.getText().toString();
                 //Añadir a la base de datos
 
-                //AÑadir una notificacion
+                //Añadir una notificacion
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
+                    elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
+                            .setSmallIcon(android.R.drawable.stat_sys_warning)
+                            .setContentTitle("Mensaje de Alerta")
+                            .setContentText("La receta "+nombreReceta+" ha sido añadida.")
+                            //.setSubText("Información extra")
+                            .setVibrate(new long[]{0, 1000, 500, 1000})
+                            .setAutoCancel(true);
+                    elCanal.enableLights(true);
+                    elManager.createNotificationChannel(elCanal);
+                }
+                elManager.notify(1, elBuilder.build());
+
                 finish();
             }
         });
