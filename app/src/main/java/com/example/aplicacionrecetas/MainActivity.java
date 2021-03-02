@@ -3,9 +3,12 @@ package com.example.aplicacionrecetas;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +18,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageView rocketImage = findViewById(R.id.recetasCarrousel);
+        rocketImage.setBackgroundResource(R.drawable.recetas_carrousel);
+
+        Drawable rocketAnimation = rocketImage.getBackground();
+        if (rocketAnimation instanceof Animatable) {
+            ((Animatable)rocketAnimation).start();
+        }
 
         iniciarSesion = false;
 

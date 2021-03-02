@@ -53,18 +53,19 @@
         android:id="@+id/searchView"
         android:layout_width="324dp"
         android:layout_height="35dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="68dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/recetasCarrousel" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="183dp"
-        android:layout_height="162dp"
-        android:layout_marginTop="68dp"
+        android:id="@+id/recetasCarrousel"
+        android:layout_width="381dp"
+        android:layout_height="207dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tituloAplicacion"
         tools:srcCompat="@tools:sample/avatars" />

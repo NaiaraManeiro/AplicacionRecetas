@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/coliflor" android:duration="2000" />
+    <item android:drawable="@drawable/fingers" android:duration="2000" />
+    <item android:drawable="@drawable/calabacin" android:duration="2000" />
+    <item android:drawable="@drawable/pollo" android:duration="2000" />
+    <item android:drawable="@drawable/patatas" android:duration="2000" />
+    <item android:drawable="@drawable/garbanzos" android:duration="2000" />
+    <item android:drawable="@drawable/pizza" android:duration="2000" />
+    <item android:drawable="@drawable/tortilla" android:duration="2000" />
+</animation-list>
