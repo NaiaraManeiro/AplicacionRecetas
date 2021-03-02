@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.aplicacionrecetas.ui.login.LoginActivity;
-
 public class MainActivity extends AppCompatActivity {
 
     private boolean iniciarSesion;
@@ -18,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        iniciarSesion = false;
+        iniciarSesion = true;
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarCerrar = findViewById(R.id.botonRegistrarCerrar);
@@ -31,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
             registrarCerrar.setText("Cerrar sesión");
         }
 
-        Intent iLogin = new Intent(this, LoginActivity.class);
+        Intent iLogin = new Intent(this, IniciarSesion.class);
+        Intent iAddReceta = new Intent(this, AnadirReceta.class);
 
         iniciarAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!iniciarSesion) {
                     startActivity(iLogin);
                 } else {
-
+                    startActivity(iAddReceta);
                 }
             }
         });
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!iniciarSesion) {
-                    startActivity(iLogin);
+
                 } else {
 
                 }
