@@ -16,13 +16,15 @@ public class BaseDatos extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE Usuario ('Nombre' VARCHAR(20) PRIMARY KEY NOT NULL, 'Contrasena' VARCHAR(20) NOT NULL," +
-                "'recetasCreadas' VARCHAR(50))");
+                "'RecetasCreadas' VARCHAR(50))");
         db.execSQL("CREATE TABLE Receta ('Nombre' VARCHAR(100) PRIMARY KEY NOT NULL, 'Imagen' BLOB," +
-                "'ingredientes' VARCHAR(30), 'pasosSeguir' VARCHAR(500))");
-        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','ingredientes', 'pasosSeguir') VALUES ('Pasta', null, 'Pasta, Tomate, Carne'," +
+                "'Ingredientes' VARCHAR(30), 'PasosSeguir' VARCHAR(500))");
+        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','Ingredientes', 'PasosSeguir') VALUES ('Pasta', null, 'Pasta, Tomate, Carne'," +
                 "'Cocermos la pasta. Hacemos la carne. Le echamos el tomate a la pasta y lo juntamos todo.')");
-        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','ingredientes', 'pasosSeguir') VALUES ('Pollo', null, 'Pollo, Patatas, Verduras'," +
+        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','Ingredientes', 'PasosSeguir') VALUES ('Pollo', null, 'Pollo, Patatas, Verduras'," +
                 "'Cocinamos el pollo. Asamos las patatas y hacemos las verduras.')");
+        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','Ingredientes', 'PasosSeguir') VALUES ('Hamburguesa', null, 'Pan, Hamburguesa, Queso'," +
+                "'Cocinamos la hamburguesa, la metemos entre el pan y le añadimos el queso.')");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.aplicacionrecetas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,7 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean iniciarSesion;
     private BuscadorListAdapter adaptador;
     private ArrayList<String> listaRecetas = new ArrayList<>();
+    private SearchView buscador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         listaBuscador.setVisibility(View.INVISIBLE);
         adaptador = new BuscadorListAdapter(this, listaRecetas);
         listaBuscador.setAdapter(adaptador);
-        SearchView buscador = findViewById(R.id.buscador);
+        buscador = findViewById(R.id.buscador);
         buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -70,6 +72,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento botón "buscar receta"
+
+        Button buscarReceta = findViewById(R.id.botonBuscarRecetas);
+        Intent iInfoReceta = new Intent(this, InfoReceta.class);
+        buscarReceta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String nomReceta = buscador.getQuery().toString();
+                if (nomReceta.equals("")) {
+                    Toast.makeText(getApplicationContext(),"Que no se te olvide escribir el nombre de la receta!", Toast.LENGTH_LONG).show();
+                } else {
+                    boolean existe = existeReceta(nomReceta);
+                    buscador.setQuery("", false);
+                    if (existe) {
+                        iInfoReceta.putExtra("nombreReceta", nomReceta);
+                        startActivity(iInfoReceta);
+                    } else {
+                        DialogFragment dialogoNoReceta = new DialogoNoExisteReceta();
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("inicioSesion",iniciarSesion);
+                        dialogoNoReceta.setArguments(bundle);
+                        dialogoNoReceta.show(getSupportFragmentManager(), "noExisteReceta");
+                    }
+                    listaBuscador.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
         //Funcionamiento de los botones inferiores
         iniciarSesion = false;
@@ -119,11 +147,26 @@ public class MainActivity extends AppCompatActivity {
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Nombre"};
-        Cursor cu = bd.query("Receta",campos,null,null,null,null,"Nombre DESC");
+        Cursor cu = bd.query("Receta",campos,null,null,null,null,"Nombre ASC");
         while (cu.moveToNext()){
             listaRecetas.add(cu.getString(0));
         }
         cu.close();
         bd.close();
+    }
+
+    private boolean existeReceta(String nombre) {
+        boolean existe = true;
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+        String[] campos = new String[] {"Nombre"};
+        String[] argumentos = new String[] {nombre};
+        Cursor cu = bd.query("Receta", campos,"Nombre>?", argumentos,null,null,null);
+        if (cu.getCount() <= 0) {
+            existe = false;
+        }
+        cu.close();
+        bd.close();
+        return existe;
     }
 }
