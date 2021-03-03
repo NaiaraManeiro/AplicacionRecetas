@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.Objects;
+
 public class DialogoAddIngrediente extends DialogFragment {
 
     @NonNull
@@ -32,7 +34,7 @@ public class DialogoAddIngrediente extends DialogFragment {
                 EditText cajaIngrediente = getDialog().findViewById(R.id.nombreUsuario);
                 String ingrediente = cajaIngrediente.getText().toString();
                 anadirReceta.putExtra("ingrediente", ingrediente);
-                getActivity().startActivity(anadirReceta);
+                Objects.requireNonNull(getActivity()).startActivity(anadirReceta);
             }
         });
         return builder.create();

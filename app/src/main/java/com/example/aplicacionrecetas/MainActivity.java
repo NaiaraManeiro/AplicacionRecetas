@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento de los botones inferiores
-        iniciarSesion = false;
+        iniciarSesion = true;
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarCerrar = findViewById(R.id.botonRegistrarCerrar);
@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     startActivity(iAddReceta);
                 }
+                listaBuscador.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     iniciarAdd.setText("Iniciar sesión");
                     registrarCerrar.setText("Registrarse");
                 }
+                listaBuscador.setVisibility(View.INVISIBLE);
             }
         });
     }
