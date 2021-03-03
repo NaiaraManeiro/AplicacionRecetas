@@ -87,13 +87,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void obtenerRecetas(){
-        BaseDatos GestorDB = new BaseDatos (this, "NombreBD", null, 1);
+        this.deleteDatabase("RecetasBD");
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"IdRecetas", "Nombre"};
-        Cursor cu = bd.query("Recetas",campos,null,null,null,null,null);
+        String[] campos = new String[] {"Nombre"};
+        Cursor cu = bd.query("Receta",campos,null,null,null,null,"Nombre DESC");
         while (cu.moveToNext()){
-            //int Cod = cu.getInt(0);
-            listaRecetas.add(cu.getString(1));
+            listaRecetas.add(cu.getString(0));
         }
         cu.close();
         bd.close();
