@@ -19,9 +19,9 @@ public class BaseDatos extends SQLiteOpenHelper {
                 "'recetasCreadas' VARCHAR(50))");
         db.execSQL("CREATE TABLE Receta ('Nombre' VARCHAR(100) PRIMARY KEY NOT NULL, 'Imagen' BLOB," +
                 "'ingredientes' VARCHAR(30), 'pasosSeguir' VARCHAR(500))");
-        db.execSQL("INSERT INTO Receta ('Nombre','Image','ingredientes', 'pasosSeguir') VALUES ('Pasta', null, 'Pasta, Tomate, Carne'," +
+        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','ingredientes', 'pasosSeguir') VALUES ('Pasta', null, 'Pasta, Tomate, Carne'," +
                 "'Cocermos la pasta. Hacemos la carne. Le echamos el tomate a la pasta y lo juntamos todo.')");
-        db.execSQL("INSERT INTO Receta ('Nombre','Image','ingredientes', 'pasosSeguir') VALUES ('Pollo', null, 'Pollo, Patatas, Verduras'," +
+        db.execSQL("INSERT INTO Receta ('Nombre','Imagen','ingredientes', 'pasosSeguir') VALUES ('Pollo', null, 'Pollo, Patatas, Verduras'," +
                 "'Cocinamos el pollo. Asamos las patatas y hacemos las verduras.')");
     }
 

@@ -13,8 +13,9 @@
         android:layout_marginTop="80dp"
         android:text="Buscar recetas"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toBottomOf="@+id/buscador" />
 
     <Button
         android:id="@+id/botonIniciarAdd"
@@ -50,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
-        android:id="@+id/searchView"
+        android:id="@+id/buscador"
         android:layout_width="324dp"
         android:layout_height="35dp"
         android:layout_marginTop="68dp"
@@ -61,10 +62,15 @@
         app:layout_constraintTop_toBottomOf="@+id/recetasCarrousel" />
 
     <ListView
-        android:id="@+id/listview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/searchView" />
+        android:id="@+id/listaBuscador"
+        android:layout_width="283dp"
+        android:layout_height="316dp"
+        android:layout_below="@+id/buscador"
+        android:layout_marginTop="112dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.656"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recetasCarrousel" />
 
     <ImageView
         android:id="@+id/recetasCarrousel"

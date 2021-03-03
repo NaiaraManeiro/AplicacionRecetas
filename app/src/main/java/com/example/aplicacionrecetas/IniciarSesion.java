@@ -59,7 +59,7 @@ public class IniciarSesion extends AppCompatActivity {
 
         EditText nombreCaja = findViewById(R.id.nombreUsuario);
         String nombre = nombreCaja.getText().toString();
-        if (nombre.equals(null)){
+        if (nombre.equals("")){
             Toast.makeText(getApplicationContext(),"El nombre no puede estar vacío.", Toast.LENGTH_LONG).show();
             nombreCaja.setText("");
             valido = false;
@@ -72,7 +72,7 @@ public class IniciarSesion extends AppCompatActivity {
 
         EditText contrasenaCaja = findViewById(R.id.contrasena);
         String contrasena = contrasenaCaja.getText().toString();
-        if (contrasena.equals(null)){
+        if (contrasena.equals("")){
             Toast.makeText(getApplicationContext(),"La contraseña no puede estar vacía.", Toast.LENGTH_LONG).show();
             contrasenaCaja.setText("");
             valido = false;
