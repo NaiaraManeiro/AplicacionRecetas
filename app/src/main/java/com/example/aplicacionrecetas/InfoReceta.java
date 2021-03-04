@@ -1,6 +1,7 @@
 package com.example.aplicacionrecetas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.sql.Blob;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class InfoReceta extends AppCompatActivity {
 
@@ -48,6 +52,19 @@ public class InfoReceta extends AppCompatActivity {
         nomReceta.setText(recetaNombre);
         TextView pasosReceta = findViewById(R.id.pasosSeguir);
         pasosReceta.setText(pasos);
+
+        ArrayList<String> listaIngredientes = new ArrayList<>(Arrays.asList(ingredientes.split(",")));
+        Button verIngredientes = findViewById(R.id.botonVerIngredientes);
+        verIngredientes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogoVerIngredientes = new DialogoVerIngredientes();
+                Bundle b = new Bundle();
+                b.putStringArrayList("listaIngredientes", listaIngredientes);
+                dialogoVerIngredientes.setArguments(b);
+                dialogoVerIngredientes.show(getSupportFragmentManager(), "addIngrediente");
+            }
+        });
 
         Button volver = findViewById(R.id.volverMenu);
         volver.setOnClickListener(new View.OnClickListener() {
