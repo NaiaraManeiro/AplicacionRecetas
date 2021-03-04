@@ -9,17 +9,17 @@
 
     <Button
         android:id="@+id/botonBuscarRecetas"
+        style="@style/BotonBuscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="80dp"
-        android:text="Buscar recetas"
+        android:text="Buscar receta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.443"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buscador"
-        style="@style/BotonBuscar" />
+        app:layout_constraintTop_toBottomOf="@+id/buscador" />
 
     <Button
         android:id="@+id/botonIniciarAdd"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/botonBuscarRecetas" />
 
     <Button
-        android:id="@+id/botonRegistrarCerrar"
+        android:id="@+id/botonRegistrarPerfil"
         style="@style/Botones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

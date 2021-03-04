@@ -3,6 +3,8 @@ package com.example.aplicacionrecetas;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,7 @@ public class RegistrarUsuario extends AppCompatActivity {
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
 
+        Intent iMain = new Intent(this, MainActivity.class);
         Button registrarBoton = findViewById(R.id.registroBoton);
 
         registrarBoton.setOnClickListener(new View.OnClickListener() {
@@ -33,10 +36,13 @@ public class RegistrarUsuario extends AppCompatActivity {
                     String contrasena = contrasenaCaja.getText().toString();
 
                     ContentValues nuevo = new ContentValues();
-                    nuevo.put(nombre, contrasena);
+                    nuevo.put("Nombre", nombre);
+                    nuevo.put("Contrasena", contrasena);
                     bd.insert("Usuario", null, nuevo);
+                    Toast.makeText(getApplicationContext(),"Registrado correctamente, inicia sesión y empieza a disfrutar!", Toast.LENGTH_LONG).show();
                     bd.close();
                     finish();
+                    startActivity(iMain);
                 }
             }
         });
@@ -46,6 +52,7 @@ public class RegistrarUsuario extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                startActivity(iMain);
             }
         });
     }
@@ -75,7 +82,7 @@ public class RegistrarUsuario extends AppCompatActivity {
             confirmarCaja.setText("");
             valido = false;
         } else {
-            if (contrasena.equals(null)){
+            if (contrasena.equals("")){
                 Toast.makeText(getApplicationContext(),"La contraseña no puede estar vacía.", Toast.LENGTH_LONG).show();
                 contrasenaCaja.setText("");
                 valido = false;
@@ -84,7 +91,7 @@ public class RegistrarUsuario extends AppCompatActivity {
                 contrasenaCaja.setText("");
                 valido = false;
             }
-            if (confContrasena.equals(null)){
+            if (confContrasena.equals("")){
                 Toast.makeText(getApplicationContext(),"La contraseña de confirmación no puede estar vacía.", Toast.LENGTH_LONG).show();
                 confirmarCaja.setText("");
                 valido = false;
@@ -95,9 +102,20 @@ public class RegistrarUsuario extends AppCompatActivity {
             }
         }
 
-
-
-
+        //Comprobamos si el nombre de usuario existe
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+        String[] campos = new String[] {"Nombre"};
+        String[] argumentos = new String[] {nombre};
+        Cursor cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
+        int cursorCount = cu.getCount();
+        cu.close();
+        bd.close();
+        if (cursorCount >= 1) {
+            Toast.makeText(getApplicationContext(),"Ese nombre ya está en uso, prueba con otro.", Toast.LENGTH_LONG).show();
+            nombreCaja.setText("");
+            valido = false;
+        }
 
         return valido;
     }

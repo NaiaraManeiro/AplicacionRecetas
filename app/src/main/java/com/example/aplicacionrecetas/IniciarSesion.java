@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class IniciarSesion extends AppCompatActivity {
@@ -20,7 +21,6 @@ public class IniciarSesion extends AppCompatActivity {
         setContentView(R.layout.activity_iniciar_sesion);
 
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
 
         Button iniciarBoton = findViewById(R.id.loginBoton);
         Intent iPerfil = new Intent(this, UsuarioPerfil.class);
@@ -35,21 +35,33 @@ public class IniciarSesion extends AppCompatActivity {
                     EditText contrasenaCaja = findViewById(R.id.contrasena);
                     String contrasena = contrasenaCaja.getText().toString();
 
+                    SQLiteDatabase bd = GestorDB.getWritableDatabase();
                     String[] campos = new String[] {"Nombre", "Contrasena"};
                     String[] argumentos = new String[] {nombre, contrasena};
-                    Cursor cu = bd.query("Usuario",campos,"Nombre>? AND Contrasena>?",argumentos,null,null,null);
+                    Cursor cu = bd.query("Usuario", campos,"Nombre=? AND Contrasena=?", argumentos,null,null,null);
                     int cursorCount = cu.getCount();
                     cu.close();
                     bd.close();
-                    if (cursorCount < 0) {
+                    if (cursorCount == 0) {
                         Toast.makeText(getApplicationContext(),"Nombre o contraseña incorrectas", Toast.LENGTH_LONG).show();
                         nombreCaja.setText("");
                         contrasenaCaja.setText("");
                     } else {
+                        iPerfil.putExtra("inicio",true);
                         finish();
                         startActivity(iPerfil);
                     }
                 }
+            }
+        });
+
+        TextView linkRegistro = findViewById(R.id.linkRegistro);
+        Intent iRegistro = new Intent(this, RegistrarUsuario.class);
+        linkRegistro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(iRegistro);
             }
         });
 

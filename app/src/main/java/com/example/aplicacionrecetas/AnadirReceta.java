@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -66,36 +67,40 @@ public class AnadirReceta extends AppCompatActivity {
             public void onClick(View v) {
                 EditText cajaNombreReceta = findViewById(R.id.nombreNuevaReceta);
                 String nombreReceta = cajaNombreReceta.getText().toString();
-                String ingredientesString = Arrays.toString(new ArrayList[]{ingredientes});
-                EditText pasosCaja = findViewById(R.id.pasosSeguir);
-                String pasos = pasosCaja.getText().toString();
+                if (nombreReceta.equals("")) {
+                    Toast.makeText(getApplicationContext(),"Que no se te olvide escribir el nombre de la receta!", Toast.LENGTH_LONG).show();
+                } else {
+                    String ingredientesString = Arrays.toString(new ArrayList[]{ingredientes});
+                    EditText pasosCaja = findViewById(R.id.pasosSeguir);
+                    String pasos = pasosCaja.getText().toString();
 
-                //Añadir a la base de datos
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                ContentValues nuevo = new ContentValues();
-                nuevo.put("Nombre", nombreReceta);
-                nuevo.put("Imagen", "");
-                nuevo.put("Ingredientes", ingredientesString);
-                nuevo.put("PasosSeguir", pasos);
-                bd.insert("Receta", null, nuevo);
-                bd.close();
+                    //Añadir a la base de datos
+                    SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                    ContentValues nuevo = new ContentValues();
+                    nuevo.put("Nombre", nombreReceta);
+                    nuevo.put("Imagen", "");
+                    nuevo.put("Ingredientes", ingredientesString);
+                    nuevo.put("PasosSeguir", pasos);
+                    bd.insert("Receta", null, nuevo);
+                    bd.close();
 
-                //Añadir una notificacion
+                    //Añadir una notificación
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
-                    elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
-                            .setSmallIcon(android.R.drawable.stat_sys_warning)
-                            .setContentTitle("Mensaje de Alerta")
-                            .setContentText("La receta "+nombreReceta+" ha sido añadida.")
-                            .setVibrate(new long[]{0, 1000, 500, 1000})
-                            .setAutoCancel(true);
-                    elCanal.enableLights(true);
-                    elManager.createNotificationChannel(elCanal);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
+                        elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
+                                .setSmallIcon(android.R.drawable.stat_sys_warning)
+                                .setContentTitle("Mensaje de Alerta")
+                                .setContentText("La receta "+nombreReceta+" ha sido añadida.")
+                                .setVibrate(new long[]{0, 1000, 500, 1000})
+                                .setAutoCancel(true);
+                        elCanal.enableLights(true);
+                        elManager.createNotificationChannel(elCanal);
+                    }
+                    elManager.notify(1, elBuilder.build());
+
+                    finish();
                 }
-                elManager.notify(1, elBuilder.build());
-
-                finish();
             }
         });
     }

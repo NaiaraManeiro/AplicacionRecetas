@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean iniciarSesion;
+    private boolean iniciarSesion = false;
     private BuscadorListAdapter adaptador;
     private ArrayList<String> listaRecetas = new ArrayList<>();
     private SearchView buscador;
@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            iniciarSesion = extras.getBoolean("inicio");
+        }
 
         //this.deleteDatabase("RecetasBD");
 
@@ -73,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento botón "buscar receta"
-
         Button buscarReceta = findViewById(R.id.botonBuscarRecetas);
         Intent iInfoReceta = new Intent(this, InfoReceta.class);
         buscarReceta.setOnClickListener(new View.OnClickListener() {
@@ -101,17 +105,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento de los botones inferiores
-        iniciarSesion = true;
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
-        Button registrarCerrar = findViewById(R.id.botonRegistrarCerrar);
+        Button registrarPerfil = findViewById(R.id.botonRegistrarPerfil);
 
         if (!iniciarSesion) {
             iniciarAdd.setText("Iniciar sesión");
-            registrarCerrar.setText("Registrarse");
+            registrarPerfil.setText("Registrarse");
         } else {
             iniciarAdd.setText("Añadir receta");
-            registrarCerrar.setText("Cerrar sesión");
+            registrarPerfil.setText("Ir al perfil");
         }
 
         Intent iLogin = new Intent(this, IniciarSesion.class);
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!iniciarSesion) {
+                    finish();
                     startActivity(iLogin);
                 } else {
                     startActivity(iAddReceta);
@@ -130,16 +134,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Intent iRegistro = new Intent(this, RegistrarUsuario.class);
+        Intent iPerfil = new Intent(this, UsuarioPerfil.class);
 
-        registrarCerrar.setOnClickListener(new View.OnClickListener() {
+        registrarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!iniciarSesion) {
+                    finish();
                     startActivity(iRegistro);
                 } else {
-                    iniciarSesion = false;
-                    iniciarAdd.setText("Iniciar sesión");
-                    registrarCerrar.setText("Registrarse");
+                    iPerfil.putExtra("inicio", iniciarSesion);
+                    finish();
+                    startActivity(iPerfil);
                 }
                 listaBuscador.setVisibility(View.INVISIBLE);
             }
@@ -160,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean existeReceta(String nombre) {
         boolean existe = true;
-        Log.i("AppNombreReceta", nombre);
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Nombre"};
