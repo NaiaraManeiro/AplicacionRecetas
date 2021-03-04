@@ -15,7 +15,6 @@ public class BaseDatos extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         db.execSQL("CREATE TABLE Usuario ('Nombre' VARCHAR(20) PRIMARY KEY NOT NULL, 'Contrasena' VARCHAR(20) NOT NULL," +
                 "'RecetasCreadas' VARCHAR(50))");
         db.execSQL("CREATE TABLE Receta ('Nombre' VARCHAR(100) PRIMARY KEY NOT NULL, 'Imagen' BLOB," +

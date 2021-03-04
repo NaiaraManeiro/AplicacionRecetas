@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento de los botones inferiores
-        iniciarSesion = false;
+        iniciarSesion = true;
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarCerrar = findViewById(R.id.botonRegistrarCerrar);
@@ -159,11 +160,12 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean existeReceta(String nombre) {
         boolean existe = true;
+        Log.i("AppNombreReceta", nombre);
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Nombre"};
         String[] argumentos = new String[] {nombre};
-        Cursor cu = bd.query("Receta", campos,"Nombre>?", argumentos,null,null,null);
+        Cursor cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
         if (cu.getCount() <= 0) {
             existe = false;
         }

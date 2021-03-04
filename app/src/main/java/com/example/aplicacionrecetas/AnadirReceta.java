@@ -57,16 +57,16 @@ public class AnadirReceta extends AppCompatActivity {
 
         Button verIngredientes = findViewById(R.id.botonVerIngredientes);
 
-        verIngredientes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment dialogoVerIngredientes = new DialogoVerIngredientes();
-                Bundle bundle = new Bundle();
-                bundle.putStringArrayList("ListaIngredientes", ingredientes);
-                dialogoVerIngredientes.setArguments(bundle);
-                dialogoVerIngredientes.show(getSupportFragmentManager(), "verIngredientes");
-            }
-        });
+//        verIngredientes.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DialogFragment dialogoVerIngredientes = new DialogoVerIngredientes();
+//                Bundle bundle = new Bundle();
+//                bundle.putStringArrayList("ListaIngredientes", ingredientes);
+//                dialogoVerIngredientes.setArguments(bundle);
+//                dialogoVerIngredientes.show(getSupportFragmentManager(), "verIngredientes");
+//            }
+//        });
 
         Button anadirReceta = findViewById(R.id.botonAddReceta);
         NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);

@@ -33,7 +33,7 @@ public class InfoReceta extends AppCompatActivity {
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Imagen", "Ingredientes", "PasosSeguir"};
         String[] argumentos = new String[] {recetaNombre};
-        Cursor cu = bd.query("Receta", campos,"Nombre>?", argumentos,null,null,null);
+        Cursor cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
         while (cu.moveToNext()){
             imagen = cu.getBlob(0);
             ingredientes = cu.getString(1);
