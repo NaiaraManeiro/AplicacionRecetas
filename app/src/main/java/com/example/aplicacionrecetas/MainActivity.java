@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento de los botones inferiores
-        iniciarSesion = true;
+        iniciarSesion = false;
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarCerrar = findViewById(R.id.botonRegistrarCerrar);

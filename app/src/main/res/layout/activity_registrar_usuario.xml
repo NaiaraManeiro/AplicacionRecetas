@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo1"
     tools:context=".RegistrarUsuario">
 
 
@@ -19,7 +20,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagenRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/imagenRegistro"
+        style="@style/EditText"/>
 
     <EditText
         android:id="@+id/contrasenaRegistro"
@@ -33,7 +35,8 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreUsuarioRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/nombreUsuarioRegistro"
+        style="@style/EditText"/>
 
     <EditText
         android:id="@+id/confirmarContrasena"
@@ -47,7 +50,8 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro" />
+        app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro"
+        style="@style/EditText"/>
 
     <ImageView
         android:id="@+id/imagenRegistro"
@@ -62,18 +66,33 @@
 
     <Button
         android:id="@+id/registroBoton"
+        style="@style/Botones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="72dp"
+        android:layout_marginRight="72dp"
         android:layout_marginBottom="64dp"
         android:enabled="true"
         android:text="Registrarse"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro"
-        app:layout_constraintVertical_bias="0.447" />
+        app:layout_constraintVertical_bias="0.448" />
+
+    <Button
+        android:id="@+id/volverRegistro"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:text="Volver"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/registroBoton"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmarContrasena"
+        app:layout_constraintVertical_bias="0.229" />
 </androidx.constraintlayout.widget.ConstraintLayout>

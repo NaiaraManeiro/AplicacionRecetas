@@ -40,6 +40,14 @@ public class RegistrarUsuario extends AppCompatActivity {
                 }
             }
         });
+
+        Button volver = findViewById(R.id.volverRegistro);
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private boolean validacion() {

@@ -52,6 +52,14 @@ public class IniciarSesion extends AppCompatActivity {
                 }
             }
         });
+
+        Button volver = findViewById(R.id.volverInicio);
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private boolean validacion() {
