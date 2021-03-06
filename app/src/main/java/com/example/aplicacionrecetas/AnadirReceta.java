@@ -1,5 +1,6 @@
 package com.example.aplicacionrecetas;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.DialogFragment;
@@ -8,8 +9,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
+import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,13 +28,16 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AnadirReceta extends AppCompatActivity {
+public class AnadirReceta extends AppCompatActivity implements DialogInterface.OnDismissListener{
 
     private String in;
     private boolean main = false;
+    private byte[] imagen;
+    private ImageView imagenNuevaReceta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +57,30 @@ public class AnadirReceta extends AppCompatActivity {
         bd.insert("Receta", null, nuevo);
         bd.close();
 
-        ImageView imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
+        imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
 
         imagenNuevaReceta.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(View v) {
-                //Añadir permisos para galeria y cámara
+                DialogFragment dialogoCamaraGaleria = new DialogoGaleriaCamara();
+                dialogoCamaraGaleria.show(getSupportFragmentManager(), "galeriaCamara");
+
+                SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                String[] campos = new String[] {"Imagen"};
+                Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
+                CursorWindow cw = new CursorWindow("test", 5000000);
+                AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
+                ac.setWindow(cw);
+                while (ac.moveToNext()){
+                    imagen = cu.getBlob(0);
+                }
+                cu.close();
+                bd.close();
+
+//                if (imagen != null) {
+//                    imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
+//                }
             }
         });
 
@@ -156,5 +181,12 @@ public class AnadirReceta extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (imagen != null) {
+            imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
+        }
     }
 }
