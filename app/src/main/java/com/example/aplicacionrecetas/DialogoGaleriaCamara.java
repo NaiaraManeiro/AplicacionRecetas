@@ -10,7 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -33,6 +36,8 @@ public class DialogoGaleriaCamara extends DialogFragment {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int CODIGO_DE_PERMISO = 1;
+    static final int RESULT_LOAD_IMAGE = 100;
+    private Bitmap icon;
 
     @NonNull
     @Override
@@ -56,7 +61,7 @@ public class DialogoGaleriaCamara extends DialogFragment {
         galeria.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                obtenerImagenGaleria();
             }
         });
 
@@ -73,6 +78,7 @@ public class DialogoGaleriaCamara extends DialogFragment {
         return builder.create();
     }
 
+    //Para el funcionamiento de la cámara
     private void comprobarPermisoCamara() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
@@ -85,7 +91,6 @@ public class DialogoGaleriaCamara extends DialogFragment {
         }
     }
 
-
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -93,14 +98,35 @@ public class DialogoGaleriaCamara extends DialogFragment {
         }
     }
 
+    //Para el funcionamiento de la galería
+    private void obtenerImagenGaleria(){
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(i, RESULT_LOAD_IMAGE);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //Cámara
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap icon = (Bitmap) extras.get("data");
+            icon = (Bitmap) extras.get("data");
+        }
+        //Galeria
+        if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMAGE){
+            Uri imageUri = data.getData();
+            InputStream imageStream = null;
+            try {
+                imageStream = getActivity().getContentResolver().openInputStream(imageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            icon = BitmapFactory.decodeStream(imageStream);
+        }
+
+        if (icon != null) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-            byte[] dataIcon =  outputStream.toByteArray();
+            byte[] dataIcon = outputStream.toByteArray();
 
             //Añadir a la base de datos
             BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);

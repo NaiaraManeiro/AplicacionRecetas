@@ -65,22 +65,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             public void onClick(View v) {
                 DialogFragment dialogoCamaraGaleria = new DialogoGaleriaCamara();
                 dialogoCamaraGaleria.show(getSupportFragmentManager(), "galeriaCamara");
-
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                String[] campos = new String[] {"Imagen"};
-                Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
-                CursorWindow cw = new CursorWindow("test", 5000000);
-                AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
-                ac.setWindow(cw);
-                while (ac.moveToNext()){
-                    imagen = cu.getBlob(0);
-                }
-                cu.close();
-                bd.close();
-
-//                if (imagen != null) {
-//                    imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-//                }
             }
         });
 
@@ -183,8 +167,21 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onDismiss(DialogInterface dialog) {
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+        String[] campos = new String[] {"Imagen"};
+        Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
+        CursorWindow cw = new CursorWindow("test", 50000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
+        ac.setWindow(cw);
+        while (ac.moveToNext()){
+            imagen = cu.getBlob(0);
+        }
+        cu.close();
+        bd.close();
         if (imagen != null) {
             imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         }
