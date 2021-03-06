@@ -38,6 +38,8 @@ public class DialogoGaleriaCamara extends DialogFragment {
     static final int CODIGO_DE_PERMISO = 1;
     static final int RESULT_LOAD_IMAGE = 100;
     private Bitmap icon;
+    private String usuarioReceta;
+    private String usuarioNombre;
 
     @NonNull
     @Override
@@ -48,6 +50,12 @@ public class DialogoGaleriaCamara extends DialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View vista = inflater.inflate(R.layout.dialogo_galeria_camara, null);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            usuarioReceta = bundle.getString("usuarioReceta");
+            usuarioNombre = bundle.getString("usuario");
+        }
 
         ImageView camara = vista.findViewById(R.id.imagenCamara);
         camara.setOnClickListener(new View.OnClickListener() {
@@ -132,8 +140,13 @@ public class DialogoGaleriaCamara extends DialogFragment {
             BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
             SQLiteDatabase bd = GestorDB.getWritableDatabase();
             ContentValues modificacion = new ContentValues();
-            modificacion.put("Imagen", dataIcon);
-            bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
+            if (usuarioReceta.equals("receta")) {
+                modificacion.put("Imagen", dataIcon);
+                bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
+            } else if (usuarioReceta.equals("usuario"))
+                modificacion.put("Icono", dataIcon);
+                String[] argumentos = new String[] {usuarioNombre};
+                bd.update("Usuario", modificacion, "Nombre=?", argumentos);
             bd.close();
         }
     }

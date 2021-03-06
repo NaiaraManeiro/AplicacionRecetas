@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
 import android.database.CursorWindow;
@@ -36,8 +37,6 @@ public class InfoReceta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_receta);
-
-        //anadirImagenes();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -88,40 +87,5 @@ public class InfoReceta extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    private void anadirImagenes() {
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pasta);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-        byte[] data =  outputStream.toByteArray();
-
-        ContentValues modificacion = new ContentValues();
-        modificacion.put("Imagen", data);
-        bd.update("Receta", modificacion, "Nombre='Pasta'", null);
-
-
-        Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.pollo);
-        ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
-        icon2.compress(Bitmap.CompressFormat.PNG, 0, outputStream2);
-        byte[] data2 =  outputStream2.toByteArray();
-
-        ContentValues modificacion2 = new ContentValues();
-        modificacion2.put("Imagen", data2);
-        bd.update("Receta", modificacion2, "Nombre='Pollo'", null);
-
-        Bitmap icon3 = BitmapFactory.decodeResource(getResources(), R.drawable.hamburguesa);
-        ByteArrayOutputStream outputStream3 = new ByteArrayOutputStream();
-        icon3.compress(Bitmap.CompressFormat.PNG, 0, outputStream3);
-        byte[] data3 =  outputStream3.toByteArray();
-
-        ContentValues modificacion3 = new ContentValues();
-        modificacion3.put("Imagen", data3);
-        bd.update("Receta", modificacion3, "Nombre='Hamburguesa'", null);
-
-        bd.close();
     }
 }

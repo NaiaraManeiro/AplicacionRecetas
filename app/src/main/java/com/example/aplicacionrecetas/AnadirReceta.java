@@ -32,7 +32,7 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class AnadirReceta extends AppCompatActivity implements DialogInterface.OnDismissListener{
+public class AnadirReceta extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
     private String in;
     private boolean main = false;
@@ -60,7 +60,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
 
         imagenNuevaReceta.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(View v) {
                 DialogFragment dialogoCamaraGaleria = new DialogoGaleriaCamara();

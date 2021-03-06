@@ -49,6 +49,7 @@ public class IniciarSesion extends AppCompatActivity {
                         contrasenaCaja.setText("");
                     } else {
                         iPerfil.putExtra("inicio",true);
+                        iPerfil.putExtra("nombre", nombre);
                         finish();
                         startActivity(iPerfil);
                     }

@@ -20,8 +20,8 @@ public class BaseDatos extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE Usuario ('Nombre' VARCHAR(20) PRIMARY KEY NOT NULL, 'Contrasena' VARCHAR(20) NOT NULL," +
-                "'RecetasCreadas' VARCHAR(50))");
-        db.execSQL("INSERT INTO Usuario ('Nombre','Contrasena','RecetasCreadas') VALUES ('N', 'N', null)");
+                "'RecetasCreadas' VARCHAR(50), 'Icono')");
+        db.execSQL("INSERT INTO Usuario ('Nombre','Contrasena','RecetasCreadas','Icono') VALUES ('N', 'N', null, null)");
         db.execSQL("CREATE TABLE Receta ('Nombre' VARCHAR(100) PRIMARY KEY NOT NULL, 'Imagen' BLOB," +
                 "'Ingredientes' VARCHAR(30), 'PasosSeguir' VARCHAR(500))");
         db.execSQL("INSERT INTO Receta ('Nombre','Imagen','Ingredientes', 'PasosSeguir') VALUES ('Pasta', null, 'Pasta, Tomate, Carne'," +
