@@ -118,13 +118,12 @@ public class AnadirReceta extends AppCompatActivity {
                     bd = GestorDB.getWritableDatabase();
                     ContentValues modificacion = new ContentValues();
                     modificacion.put("Nombre", nombreReceta);
-                    modificacion.put("Imagen", data); //Coger la imagen del imageView
+                    modificacion.put("Imagen", data);
                     modificacion.put("PasosSeguir", pasos);
                     bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
                     bd.close();
 
                     //Añadir una notificación
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
                         elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))

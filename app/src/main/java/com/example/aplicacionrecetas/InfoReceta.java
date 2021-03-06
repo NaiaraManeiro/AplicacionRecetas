@@ -63,7 +63,7 @@ public class InfoReceta extends AppCompatActivity {
         ImageView imagenReceta = findViewById(R.id.imagenReceta);
         imagenReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         TextView nomReceta = findViewById(R.id.nombreReceta);
-        nomReceta.setText(recetaNombre);
+        nomReceta.setText("Nombre: "+recetaNombre);
         TextView pasosReceta = findViewById(R.id.pasosSeguir);
         pasosReceta.setText(pasos);
 

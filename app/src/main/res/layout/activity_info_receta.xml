@@ -4,21 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo1"
     tools:context=".AnadirReceta">
 
     <ImageView
         android:id="@+id/imagenReceta"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/addfotoreceta" />
 
     <Button
         android:id="@+id/volverMenu"
+        style="@style/Botones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -29,6 +31,7 @@
 
     <TextView
         android:id="@+id/textPasos"
+        style="@style/Texto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -40,8 +43,10 @@
 
     <EditText
         android:id="@+id/pasosSeguir"
+        style="@style/Texto"
         android:layout_width="367dp"
         android:layout_height="394dp"
+        android:enabled="false"
         android:gravity="start|top"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toTopOf="@+id/volverMenu"
@@ -51,6 +56,7 @@
 
     <Button
         android:id="@+id/botonVerIngredientes"
+        style="@style/Botones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -66,13 +72,14 @@
 
     <TextView
         android:id="@+id/nombreReceta"
-        android:layout_width="199dp"
-        android:layout_height="41dp"
+        style="@style/Texto"
+        android:layout_width="184dp"
+        android:layout_height="47dp"
         app:layout_constraintBottom_toTopOf="@+id/botonVerIngredientes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintHorizontal_bias="0.644"
         app:layout_constraintStart_toEndOf="@+id/imagenReceta"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.561" />
+        app:layout_constraintVertical_bias="0.813" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

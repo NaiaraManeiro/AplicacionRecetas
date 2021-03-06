@@ -13,19 +13,17 @@ import java.util.Locale;
 
 public class BuscadorListAdapter extends BaseAdapter {
 
-    // Declare Variables
-
     Context mContext;
     LayoutInflater inflater;
     private List<String> listaRecetas;
     private ArrayList<String> arraylist;
 
-    public BuscadorListAdapter(Context context, List<String> animalNamesList) {
+    public BuscadorListAdapter(Context context, List<String> ingredientesLista) {
         mContext = context;
-        listaRecetas = animalNamesList;
+        listaRecetas = ingredientesLista;
         inflater = LayoutInflater.from(mContext);
         this.arraylist = new ArrayList<>();
-        this.arraylist.addAll(animalNamesList);
+        this.arraylist.addAll(listaRecetas);
     }
 
     public class ViewHolder {
