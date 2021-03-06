@@ -1,16 +1,24 @@
 package com.example.aplicacionrecetas;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.ContentValues;
+import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
+import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,10 +31,13 @@ public class InfoReceta extends AppCompatActivity {
     private String ingredientes;
     private String pasos;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_receta);
+
+        //anadirImagenes();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -38,7 +49,10 @@ public class InfoReceta extends AppCompatActivity {
         String[] campos = new String[] {"Imagen", "Ingredientes", "PasosSeguir"};
         String[] argumentos = new String[] {recetaNombre};
         Cursor cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
-        while (cu.moveToNext()){
+        CursorWindow cw = new CursorWindow("test", 5000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
+        ac.setWindow(cw);
+        while (ac.moveToNext()){
             imagen = cu.getBlob(0);
             ingredientes = cu.getString(1);
             pasos = cu.getString(2);
@@ -47,7 +61,7 @@ public class InfoReceta extends AppCompatActivity {
         bd.close();
 
         ImageView imagenReceta = findViewById(R.id.imagenReceta);
-        //imagenReceta.setImageBitmap(imagen);
+        imagenReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         TextView nomReceta = findViewById(R.id.nombreReceta);
         nomReceta.setText(recetaNombre);
         TextView pasosReceta = findViewById(R.id.pasosSeguir);
@@ -73,5 +87,43 @@ public class InfoReceta extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void anadirImagenes() {
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pasta);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+        byte[] data =  outputStream.toByteArray();
+
+        ContentValues modificacion = new ContentValues();
+        modificacion.put("Imagen", data);
+        String[] argumentos = new String[] {"Pasta"};
+        bd.update("Receta", modificacion, "Nombre=?", argumentos);
+
+
+        Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.pollo);
+        ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
+        icon2.compress(Bitmap.CompressFormat.PNG, 0, outputStream2);
+        byte[] data2 =  outputStream2.toByteArray();
+
+        ContentValues modificacion2 = new ContentValues();
+        modificacion2.put("Imagen", data2);
+        String[] argumentos2 = new String[] {"Pollo"};
+        bd.update("Receta", modificacion2, "Nombre=?", argumentos2);
+
+        Bitmap icon3 = BitmapFactory.decodeResource(getResources(), R.drawable.hamburguesa);
+        ByteArrayOutputStream outputStream3 = new ByteArrayOutputStream();
+        icon3.compress(Bitmap.CompressFormat.PNG, 0, outputStream3);
+        byte[] data3 =  outputStream3.toByteArray();
+
+        ContentValues modificacion3 = new ContentValues();
+        modificacion3.put("Imagen", data3);
+        String[] argumentos3 = new String[] {"Hamburguesa"};
+        bd.update("Receta", modificacion3, "Nombre=?", argumentos3);
+
+        bd.close();
     }
 }

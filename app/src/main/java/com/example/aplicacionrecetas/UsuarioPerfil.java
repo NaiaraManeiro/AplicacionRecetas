@@ -1,6 +1,8 @@
 package com.example.aplicacionrecetas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +21,19 @@ public class UsuarioPerfil extends AppCompatActivity {
         if (extras != null) {
             inicio = extras.getBoolean("inicio");
         }
+
+        Button addreceta = findViewById(R.id.botonNewReceta);
+        Intent iAddReceta = new Intent(this, AnadirReceta.class);
+        addreceta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(iAddReceta);
+            }
+        });
+
+        RecyclerView rv = findViewById(R.id.usuarioRecetas);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setLayoutManager(llm);
 
         Button volverMenu = findViewById(R.id.volverMenuBoton);
         Intent iMain = new Intent(this, MainActivity.class);
