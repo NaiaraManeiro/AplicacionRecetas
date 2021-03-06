@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         //this.deleteDatabase("RecetasBD");
 
-
         //Creamos el carrousel de imágenes
         ImageView rocketImage = findViewById(R.id.recetasCarrousel);
         rocketImage.setBackgroundResource(R.drawable.recetas_carrousel);
@@ -132,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     startActivity(iLogin);
                 } else {
+                    finish();
+                    iAddReceta.putExtra("main", true);
                     startActivity(iAddReceta);
                 }
                 listaBuscador.setVisibility(View.INVISIBLE);
