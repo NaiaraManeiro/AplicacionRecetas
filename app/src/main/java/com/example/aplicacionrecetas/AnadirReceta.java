@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,24 +19,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AnadirReceta extends AppCompatActivity {
 
-    private ArrayList<String> ingredientes = new ArrayList<>();;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anadir_receta);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String ingrediente = extras.getString("ingrediente");
-            ingredientes.add(ingrediente);
-        }
+        //Creamos una receta para meter los datos
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+        ContentValues nuevo = new ContentValues();
+        nuevo.put("Nombre", "NewReceta");
+        bd.insert("Receta", null, nuevo);
+        bd.close();
 
         ImageView imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
 
@@ -60,8 +62,6 @@ public class AnadirReceta extends AppCompatActivity {
         NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this, "IdCanal");
 
-        BaseDatos GestorDB = new BaseDatos (this, "NombreBD", null, 1);
-
         anadirReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,18 +70,21 @@ public class AnadirReceta extends AppCompatActivity {
                 if (nombreReceta.equals("")) {
                     Toast.makeText(getApplicationContext(),"Que no se te olvide escribir el nombre de la receta!", Toast.LENGTH_LONG).show();
                 } else {
-                    String ingredientesString = Arrays.toString(new ArrayList[]{ingredientes});
                     EditText pasosCaja = findViewById(R.id.pasosSeguir);
                     String pasos = pasosCaja.getText().toString();
 
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.id.imagenNuevaReceta);
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+                    byte[] data =  outputStream.toByteArray();
+
                     //Añadir a la base de datos
                     SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                    ContentValues nuevo = new ContentValues();
-                    nuevo.put("Nombre", nombreReceta);
-                    nuevo.put("Imagen", "");
-                    nuevo.put("Ingredientes", ingredientesString);
-                    nuevo.put("PasosSeguir", pasos);
-                    bd.insert("Receta", null, nuevo);
+                    ContentValues modificacion = new ContentValues();
+                    modificacion.put("Nombre", nombreReceta);
+                    modificacion.put("Imagen", data); //Coger la imagen del imageView
+                    modificacion.put("PasosSeguir", pasos);
+                    bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
                     bd.close();
 
                     //Añadir una notificación
@@ -101,6 +104,17 @@ public class AnadirReceta extends AppCompatActivity {
 
                     finish();
                 }
+            }
+        });
+
+        Button volver = findViewById(R.id.buttonVolverAdd);
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                bd.delete("Receta", "nombre='NewReceta'", null);
+                bd.close();
+                finish();
             }
         });
     }

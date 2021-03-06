@@ -2,8 +2,10 @@ package com.example.aplicacionrecetas;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +18,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Arrays;
 
 public class DialogoAddIngrediente extends DialogFragment {
-    private static final String STATE_INGREDIENTES = "ingredientes";
     private ArrayList<String> listaIngredientes = new ArrayList<>();
+    private String ingredientes;
 
     @NonNull
     @Override
@@ -32,10 +34,7 @@ public class DialogoAddIngrediente extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View vista = inflater.inflate(R.layout.dialog_add_ingrediente, null);
 
-        if (savedInstanceState != null) {
-            listaIngredientes = savedInstanceState.getStringArrayList(STATE_INGREDIENTES);
-        }
-
+        BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
 
         Button anadir = vista.findViewById(R.id.anadirIngrediente);
         anadir.setOnClickListener(new View.OnClickListener() {
@@ -43,7 +42,32 @@ public class DialogoAddIngrediente extends DialogFragment {
             public void onClick(View v) {
                 EditText cajaIngrediente = vista.findViewById(R.id.nombreIngrediente);
                 String ingrediente = cajaIngrediente.getText().toString();
-                listaIngredientes.add(ingrediente);
+
+                SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                String[] campos = new String[] {"Ingredientes"};
+                Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'",null,null,null,null);
+                while (cu.moveToNext()){
+                    String ingredienteS = cu.getString(0);
+                    if (cu.getCount() > 0 && ingredienteS != null) {
+                        ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(ingredienteS.split(",")));
+                        listaIngredientes.addAll(arrayIngredientes);
+                    }
+                    listaIngredientes.add(ingrediente);
+                }
+                bd.close();
+
+                String commaseparatedlist = listaIngredientes.toString();
+                ingredientes = commaseparatedlist.replace("[", "")
+                        .replace("]", "")
+                        .replace(" ", "");
+
+
+                bd = GestorDB.getWritableDatabase();
+                ContentValues modificacion = new ContentValues();
+                modificacion.put("Ingredientes", ingredientes);
+                bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
+                bd.close();
+
                 Toast.makeText(getActivity().getApplicationContext(),"Ingrediente añadido", Toast.LENGTH_SHORT).show();
                 cajaIngrediente.setText("");
             }
@@ -70,11 +94,5 @@ public class DialogoAddIngrediente extends DialogFragment {
         builder.setView(vista);
 
         return builder.create();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList(STATE_INGREDIENTES, listaIngredientes);
     }
 }

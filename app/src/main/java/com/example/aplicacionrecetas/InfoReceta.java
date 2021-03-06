@@ -75,6 +75,7 @@ public class InfoReceta extends AppCompatActivity {
                 DialogFragment dialogoVerIngredientes = new DialogoVerIngredientes();
                 Bundle b = new Bundle();
                 b.putStringArrayList("listaIngredientes", listaIngredientes);
+                b.putBoolean("infoReceta", true);
                 dialogoVerIngredientes.setArguments(b);
                 dialogoVerIngredientes.show(getSupportFragmentManager(), "addIngrediente");
             }
@@ -100,8 +101,7 @@ public class InfoReceta extends AppCompatActivity {
 
         ContentValues modificacion = new ContentValues();
         modificacion.put("Imagen", data);
-        String[] argumentos = new String[] {"Pasta"};
-        bd.update("Receta", modificacion, "Nombre=?", argumentos);
+        bd.update("Receta", modificacion, "Nombre='Pasta'", null);
 
 
         Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.pollo);
@@ -111,8 +111,7 @@ public class InfoReceta extends AppCompatActivity {
 
         ContentValues modificacion2 = new ContentValues();
         modificacion2.put("Imagen", data2);
-        String[] argumentos2 = new String[] {"Pollo"};
-        bd.update("Receta", modificacion2, "Nombre=?", argumentos2);
+        bd.update("Receta", modificacion2, "Nombre='Pollo'", null);
 
         Bitmap icon3 = BitmapFactory.decodeResource(getResources(), R.drawable.hamburguesa);
         ByteArrayOutputStream outputStream3 = new ByteArrayOutputStream();
@@ -121,8 +120,7 @@ public class InfoReceta extends AppCompatActivity {
 
         ContentValues modificacion3 = new ContentValues();
         modificacion3.put("Imagen", data3);
-        String[] argumentos3 = new String[] {"Hamburguesa"};
-        bd.update("Receta", modificacion3, "Nombre=?", argumentos3);
+        bd.update("Receta", modificacion3, "Nombre='Hamburguesa'", null);
 
         bd.close();
     }
