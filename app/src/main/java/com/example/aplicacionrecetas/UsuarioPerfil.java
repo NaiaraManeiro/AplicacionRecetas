@@ -29,6 +29,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
     private byte[] imagen;
     private ImageView iconoUsuario;
     private String recetasUsuario;
+    private String[] recetasNombre;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -103,7 +104,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         bd.close();
 
         if (recetasUsuario != null) {
-            String[] recetasNombre = recetasUsuario.split(",");
+            recetasNombre = recetasUsuario.split(",");
             ArrayList<byte[]> recetasFoto = new ArrayList<>();
             GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
             for (String receta : recetasNombre) {
@@ -128,6 +129,18 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
             GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
             rv.setLayoutManager(elLayoutRejillaIgual);
         }
+
+        Intent iInfoReceta = new Intent(this, InfoReceta.class);
+
+        rv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int itemPosition = rv.getChildLayoutPosition(v);
+                String item = recetasNombre[itemPosition];
+                iInfoReceta.putExtra("nombreReceta", item);
+                startActivity(iInfoReceta);
+            }
+        });
 
         //Funcionamiento de botones
 
