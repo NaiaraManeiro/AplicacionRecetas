@@ -99,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
                 if (nomReceta.equals("")) {
                     Toast.makeText(getApplicationContext(),"Que no se te olvide escribir el nombre de la receta!", Toast.LENGTH_LONG).show();
                 } else {
-                    boolean existe = existeReceta(nomReceta);
+                    String nombreReceta = existeReceta(nomReceta);
                     buscador.setQuery("", false);
-                    if (existe) {
-                        iInfoReceta.putExtra("nombreReceta", nomReceta);
+                    if (nombreReceta != null) {
+                        iInfoReceta.putExtra("nombreReceta", nombreReceta);
                         startActivity(iInfoReceta);
                     } else {
                         DialogFragment dialogoNoReceta = new DialogoNoExisteReceta();
@@ -180,19 +180,23 @@ public class MainActivity extends AppCompatActivity {
         bd.close();
     }
 
-    private boolean existeReceta(String nombre) {
-        boolean existe = true;
+    private String existeReceta(String nombre) {
+        String receta = null;
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Nombre"};
-        String[] argumentos = new String[] {nombre};
-        Cursor cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
-        if (cu.getCount() <= 0) {
-            existe = false;
+        Cursor cu = bd.query("Receta", campos,null, null,null,null,null);
+        while (cu.moveToNext()) {
+            String nombreAct = cu.getString(0);
+            if (nombre.toLowerCase().equals(nombreAct.toLowerCase())) {
+                cu.close();
+                bd.close();
+                return nombreAct;
+            }
         }
         cu.close();
         bd.close();
-        return existe;
+        return receta;
     }
 
     private void anadirImagenes() {

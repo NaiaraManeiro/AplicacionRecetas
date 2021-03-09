@@ -76,7 +76,7 @@ public class InfoReceta extends AppCompatActivity {
                 b.putStringArrayList("listaIngredientes", listaIngredientes);
                 b.putBoolean("infoReceta", true);
                 dialogoVerIngredientes.setArguments(b);
-                dialogoVerIngredientes.show(getSupportFragmentManager(), "addIngrediente");
+                dialogoVerIngredientes.show(getSupportFragmentManager(), "verIngrediente");
             }
         });
 

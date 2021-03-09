@@ -2,6 +2,7 @@ package com.example.aplicacionrecetas;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,8 +25,7 @@ public class DialogoVerIngredientes extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setCancelable(true);
+        builder.setTitle("*Pulsa un ingrediente para borrarlo.");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -56,7 +56,25 @@ public class DialogoVerIngredientes extends DialogFragment {
         builder.setItems(ingredientes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                ArrayList<String> nuevaLista = new ArrayList<>();
+                String in = (String) ingredientes[i];
+                for (int j = 0; j < ingredientes.length; j++) {
+                    if (!ingredientes[j].equals(in)) {
+                        nuevaLista.add((String) ingredientes[j]);
+                    }
+                }
+                ingredientes = nuevaLista.toArray(new CharSequence[listaIngredientes.size()]);
+                String commaseparatedlist = nuevaLista.toString();
+                String ingredientesNuevos = commaseparatedlist.replace("[", "")
+                        .replace("]", "")
+                        .replace(" ", "");
 
+                BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
+                SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                ContentValues modificacion = new ContentValues();
+                modificacion.put("Ingredientes", ingredientesNuevos);
+                bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
+                bd.close();
             }
         });
 

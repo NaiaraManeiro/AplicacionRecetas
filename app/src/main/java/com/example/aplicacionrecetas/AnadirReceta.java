@@ -36,6 +36,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
 
     private String in;
     private boolean main = false;
+    private String nombreUsuario;
     private byte[] imagen;
     private ImageView imagenNuevaReceta;
 
@@ -47,6 +48,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             main = extras.getBoolean("main");
+            nombreUsuario = extras.getString("usuario");
         }
 
         //Creamos una receta para meter los datos
@@ -63,6 +65,9 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             @Override
             public void onClick(View v) {
                 DialogFragment dialogoCamaraGaleria = new DialogoGaleriaCamara();
+                Bundle bundle = new Bundle();
+                bundle.putString("usuarioReceta", "receta");
+                dialogoCamaraGaleria.setArguments(bundle);
                 dialogoCamaraGaleria.show(getSupportFragmentManager(), "galeriaCamara");
             }
         });
@@ -83,6 +88,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         Intent iMain = new Intent(this, MainActivity.class);
 
         anadirReceta.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(View v) {
                 EditText cajaNombreReceta = findViewById(R.id.nombreNuevaReceta);
@@ -122,7 +128,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
                     byte[] data =  outputStream.toByteArray();
 
-                    //Añadir a la base de datos
+                    //Añadir a la base de datos la receta
                     bd = GestorDB.getWritableDatabase();
                     ContentValues modificacion = new ContentValues();
                     modificacion.put("Nombre", nombreReceta);
@@ -130,6 +136,9 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     modificacion.put("PasosSeguir", pasos);
                     bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
                     bd.close();
+
+                    //Le añadimos la receta al usuario
+                    anadirRecetaUsuario(nombreReceta, nombreUsuario);
 
                     //Añadir una notificación
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -149,7 +158,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     if (main) {
                         startActivity(iMain);
                     }
-
                 }
             }
         });
@@ -184,5 +192,37 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         if (imagen != null) {
             imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void anadirRecetaUsuario(String nombreReceta, String nombreUsuario) {
+        String recetas = "";
+        //Vemos y cogemos las recetas que tiene
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+        String[] campos = new String[] {"RecetasCreadas"};
+        String[] argumentos = new String[] {nombreUsuario};
+        Cursor cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
+        while (cu.moveToNext()){
+            recetas = cu.getString(0);
+        }
+        cu.close();
+        bd.close();
+
+        String recetasUsuario = "";
+
+        if (recetas != null) {
+            recetasUsuario = recetas+","+nombreReceta;
+        } else {
+            recetasUsuario = nombreReceta;
+        }
+
+        //Le añadimos la nueva receta
+        bd = GestorDB.getWritableDatabase();
+        ContentValues modificacion = new ContentValues();
+        modificacion.put("Nombre", recetasUsuario);
+        argumentos = new String[] {nombreUsuario};
+        bd.update("Usuario", modificacion, "Nombre=?", argumentos);
+        bd.close();
     }
 }

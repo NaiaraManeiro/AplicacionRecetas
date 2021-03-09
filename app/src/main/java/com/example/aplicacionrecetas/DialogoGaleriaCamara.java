@@ -53,7 +53,7 @@ public class DialogoGaleriaCamara extends DialogFragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            usuarioReceta = bundle.getString("usuarioReceta");
+            usuarioReceta = bundle.getString("usuarioReceta"); // Para saber si viene del perfil de usuario o de añadir una receta
             usuarioNombre = bundle.getString("usuario");
         }
 

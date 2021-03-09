@@ -53,7 +53,10 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         bd.close();
 
         iconoUsuario = findViewById(R.id.iconoUsuario);
-        iconoUsuario.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
+
+        if (imagen != null) {
+            iconoUsuario.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
+        }
         TextView nomUsuario = findViewById(R.id.nombreUsuarioText);
         nomUsuario.setText("Nombre: "+nombre);
 
@@ -74,6 +77,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         addreceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                iAddReceta.putExtra("usuarioReceta", nombre);
                 startActivity(iAddReceta);
             }
         });
