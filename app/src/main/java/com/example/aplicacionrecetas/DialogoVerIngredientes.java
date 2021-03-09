@@ -25,15 +25,16 @@ public class DialogoVerIngredientes extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("*Pulsa un ingrediente para borrarlo.");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
             listaIngredientes = bundle.getStringArrayList("listaIngredientes");
-            infoReceta = bundle.getBoolean("infoReceta");
+            infoReceta = bundle.getBoolean("infoReceta"); //Para saber si viene de la clase info receta
         }
 
         if(!infoReceta) {
+            builder.setTitle("*Pulsa un ingrediente para borrarlo.");
+
             BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
             SQLiteDatabase bd = GestorDB.getWritableDatabase();
             String[] campos = new String[] {"Ingredientes"};
@@ -56,25 +57,27 @@ public class DialogoVerIngredientes extends DialogFragment {
         builder.setItems(ingredientes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                ArrayList<String> nuevaLista = new ArrayList<>();
-                String in = (String) ingredientes[i];
-                for (int j = 0; j < ingredientes.length; j++) {
-                    if (!ingredientes[j].equals(in)) {
-                        nuevaLista.add((String) ingredientes[j]);
+                if (!infoReceta) {
+                    ArrayList<String> nuevaLista = new ArrayList<>();
+                    String in = (String) ingredientes[i];
+                    for (int j = 0; j < ingredientes.length; j++) {
+                        if (!ingredientes[j].equals(in)) {
+                            nuevaLista.add((String) ingredientes[j]);
+                        }
                     }
-                }
-                ingredientes = nuevaLista.toArray(new CharSequence[listaIngredientes.size()]);
-                String commaseparatedlist = nuevaLista.toString();
-                String ingredientesNuevos = commaseparatedlist.replace("[", "")
-                        .replace("]", "")
-                        .replace(" ", "");
+                    ingredientes = nuevaLista.toArray(new CharSequence[listaIngredientes.size()]);
+                    String commaseparatedlist = nuevaLista.toString();
+                    String ingredientesNuevos = commaseparatedlist.replace("[", "")
+                            .replace("]", "")
+                            .replace(" ", "");
 
-                BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                ContentValues modificacion = new ContentValues();
-                modificacion.put("Ingredientes", ingredientesNuevos);
-                bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-                bd.close();
+                    BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
+                    SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                    ContentValues modificacion = new ContentValues();
+                    modificacion.put("Ingredientes", ingredientesNuevos);
+                    bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
+                    bd.close();
+                }
             }
         });
 

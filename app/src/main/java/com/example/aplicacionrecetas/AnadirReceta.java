@@ -86,6 +86,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this, "IdCanal");
         Intent iMain = new Intent(this, MainActivity.class);
+        Intent iPerfil = new Intent(this, UsuarioPerfil.class);
 
         anadirReceta.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.P)
@@ -155,8 +156,13 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     elManager.notify(1, elBuilder.build());
 
                     finish();
+
                     if (main) {
+                        iMain.putExtra("usuario", nombreUsuario);
                         startActivity(iMain);
+                    } else {
+                        iPerfil.putExtra("nombre", nombreUsuario);
+                        startActivity(iPerfil);
                     }
                 }
             }
@@ -170,6 +176,13 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 bd.delete("Receta", "nombre='NewReceta'", null);
                 bd.close();
                 finish();
+                if (main) {
+                    iMain.putExtra("usuario", nombreUsuario);
+                    startActivity(iMain);
+                } else {
+                    iPerfil.putExtra("nombre", nombreUsuario);
+                    startActivity(iPerfil);
+                }
             }
         });
     }
@@ -220,9 +233,22 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         //Le añadimos la nueva receta
         bd = GestorDB.getWritableDatabase();
         ContentValues modificacion = new ContentValues();
-        modificacion.put("Nombre", recetasUsuario);
+        modificacion.put("RecetasCreadas", recetasUsuario);
         argumentos = new String[] {nombreUsuario};
         bd.update("Usuario", modificacion, "Nombre=?", argumentos);
+        bd.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        SQLiteDatabase bd = GestorDB.getWritableDatabase();
+        String[] campos = new String[] {"Nombre"};
+        Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
+        if (cu.getCount() > 0) {
+            bd.delete("Receta", "nombre='NewReceta'", null);
+        }
         bd.close();
     }
 }

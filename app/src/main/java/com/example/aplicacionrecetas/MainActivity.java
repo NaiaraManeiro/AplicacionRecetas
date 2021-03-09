@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private BuscadorListAdapter adaptador;
     private ArrayList<String> listaRecetas = new ArrayList<>();
     private SearchView buscador;
+    private String nombreUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,11 @@ public class MainActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             iniciarSesion = extras.getBoolean("inicio");
+            nombreUsuario = extras.getString("nombre");
         }
 
-        //this.deleteDatabase("RecetasBD");
-        //anadirImagenes();
+        this.deleteDatabase("RecetasBD");
+        anadirImagenes();
 
         //Creamos el carrousel de imágenes
         ImageView rocketImage = findViewById(R.id.recetasCarrousel);
@@ -141,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     finish();
                     iAddReceta.putExtra("main", true);
+                    iAddReceta.putExtra("usuario", nombreUsuario);
                     startActivity(iAddReceta);
                 }
                 listaBuscador.setVisibility(View.INVISIBLE);
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     startActivity(iRegistro);
                 } else {
-                    iPerfil.putExtra("inicio", iniciarSesion);
+                    iPerfil.putExtra("nombre", nombreUsuario);
                     finish();
                     startActivity(iPerfil);
                 }

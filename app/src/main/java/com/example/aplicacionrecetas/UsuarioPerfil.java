@@ -3,6 +3,7 @@ package com.example.aplicacionrecetas;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +21,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener{
-    private boolean inicio;
     private String nombre;
     private byte[] imagen;
     private ImageView iconoUsuario;
+    private String recetasUsuario;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -34,7 +38,6 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            inicio = extras.getBoolean("inicio");
             nombre = extras.getString("nombre");
         }
 
@@ -77,21 +80,64 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         addreceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iAddReceta.putExtra("usuarioReceta", nombre);
+                finish();
+                iAddReceta.putExtra("usuario", nombre);
                 startActivity(iAddReceta);
             }
         });
 
+        //Mostramos las recetas que el usuario ha creado
+
         RecyclerView rv = findViewById(R.id.usuarioRecetas);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rv.setLayoutManager(llm);
+
+        //Obtenemos las recetas creadas
+        GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        bd = GestorDB.getWritableDatabase();
+        campos = new String[] {"RecetasCreadas"};
+        argumentos = new String[] {nombre};
+        cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
+        while (cu.moveToNext()){
+            recetasUsuario = cu.getString(0);
+        }
+        cu.close();
+        bd.close();
+
+        if (recetasUsuario != null) {
+            String[] recetasNombre = recetasUsuario.split(",");
+            ArrayList<byte[]> recetasFoto = new ArrayList<>();
+            GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+            for (String receta : recetasNombre) {
+                bd = GestorDB.getWritableDatabase();
+                campos = new String[] {"Imagen"};
+                argumentos = new String[] {receta};
+                cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
+                cw = new CursorWindow("test", 5000000);
+                ac = (AbstractWindowedCursor) cu;
+                ac.setWindow(cw);
+                while (ac.moveToNext()){
+                    byte[] imagen = cu.getBlob(0);
+                    recetasFoto.add(imagen);
+                }
+            }
+            cu.close();
+            bd.close();
+
+            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre,recetasFoto);
+            rv.setAdapter(eladaptador);
+
+            GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
+            rv.setLayoutManager(elLayoutRejillaIgual);
+        }
+
+        //Funcionamiento de botones
 
         Button volverMenu = findViewById(R.id.volverMenuBoton);
         Intent iMain = new Intent(this, MainActivity.class);
         volverMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iMain.putExtra("inicio", inicio);
+                iMain.putExtra("inicio", true);
+                iMain.putExtra("nombre", nombre);
                 finish();
                 startActivity(iMain);
             }
