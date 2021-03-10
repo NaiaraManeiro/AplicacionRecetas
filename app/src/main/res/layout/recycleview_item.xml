@@ -5,8 +5,8 @@
     android:layout_width="170dp"
     android:layout_height="160dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="10dp"
-    >
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="170dp"
@@ -21,10 +21,10 @@
 
         <TextView
             android:id="@+id/receta_name"
+            style="@style/Texto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
+            android:gravity="center"
             android:textSize="18dp" />
 
     </LinearLayout>

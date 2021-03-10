@@ -112,7 +112,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                 campos = new String[] {"Imagen"};
                 argumentos = new String[] {receta};
                 cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
-                cw = new CursorWindow("test", 5000000);
+                cw = new CursorWindow("test", 50000000);
                 ac = (AbstractWindowedCursor) cu;
                 ac.setWindow(cw);
                 while (ac.moveToNext()){

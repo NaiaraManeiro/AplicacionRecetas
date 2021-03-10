@@ -33,34 +33,41 @@
 
     <TextView
         android:id="@+id/textUsuarioRecetas"
+        style="@style/Texto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
         android:text="Mis recetas:"
         app:layout_constraintBottom_toTopOf="@+id/usuarioRecetas"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconoUsuario" />
+        app:layout_constraintTop_toBottomOf="@+id/iconoUsuario"
+        app:layout_constraintVertical_bias="0.584" />
 
     <Button
         android:id="@+id/botonNewReceta"
         style="@style/Botones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="96dp"
         android:text="Añadir receta"
         app:layout_constraintBottom_toTopOf="@+id/usuarioRecetas"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toEndOf="@+id/iconoUsuario" />
 
     <TextView
         android:id="@+id/nombreUsuarioText"
+        style="@style/Texto"
         android:layout_width="208dp"
         android:layout_height="35dp"
+        android:gravity="center|center_horizontal|center_vertical"
         app:layout_constraintBottom_toTopOf="@+id/botonNewReceta"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.384"
         app:layout_constraintStart_toEndOf="@+id/iconoUsuario"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.573" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/usuarioRecetas"
@@ -69,7 +76,8 @@
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/volverMenuBoton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <ImageView
         android:id="@+id/iconoUsuario"

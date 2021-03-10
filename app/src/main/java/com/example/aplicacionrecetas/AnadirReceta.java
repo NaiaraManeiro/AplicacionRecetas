@@ -21,6 +21,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -146,8 +147,8 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                         NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
                         elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
                                 .setSmallIcon(android.R.drawable.stat_sys_warning)
-                                .setContentTitle("Mensaje de Alerta")
-                                .setContentText("La receta "+nombreReceta+" ha sido añadida.")
+                                .setContentTitle("Receta añadida!")
+                                .setContentText("La receta '"+nombreReceta+"' ha sido añadida.")
                                 .setVibrate(new long[]{0, 1000, 500, 1000})
                                 .setAutoCancel(true);
                         elCanal.enableLights(true);

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -46,7 +47,6 @@ public class DialogoGaleriaCamara extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("¿De dónde quieres obtener la imágen?");
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View vista = inflater.inflate(R.layout.dialogo_galeria_camara, null);
@@ -143,10 +143,11 @@ public class DialogoGaleriaCamara extends DialogFragment {
             if (usuarioReceta.equals("receta")) {
                 modificacion.put("Imagen", dataIcon);
                 bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-            } else if (usuarioReceta.equals("usuario"))
+            } else if (usuarioReceta.equals("usuario")) {
                 modificacion.put("Icono", dataIcon);
-                String[] argumentos = new String[] {usuarioNombre};
+                String[] argumentos = new String[]{usuarioNombre};
                 bd.update("Usuario", modificacion, "Nombre=?", argumentos);
+            }
             bd.close();
         }
     }

@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +46,6 @@ public class DialogoNoExisteReceta extends DialogFragment {
                 dismiss();
             }
         });
-
         return builder.create();
     }
 }
