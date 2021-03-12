@@ -62,7 +62,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
             iconoUsuario.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         }
         TextView nomUsuario = findViewById(R.id.nombreUsuarioText);
-        nomUsuario.setText("Nombre: "+nombre);
+        nomUsuario.setText(getString(R.string.nombre)+" "+nombre);
 
         iconoUsuario.setOnClickListener(new View.OnClickListener() {
             @Override

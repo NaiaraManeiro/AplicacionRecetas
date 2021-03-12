@@ -39,7 +39,7 @@ public class RegistrarUsuario extends AppCompatActivity {
                     nuevo.put("Nombre", nombre);
                     nuevo.put("Contrasena", contrasena);
                     bd.insert("Usuario", null, nuevo);
-                    Toast.makeText(getApplicationContext(),"Registrado correctamente, inicia sesión y empieza a disfrutar!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),getString(R.string.registroCorrecto), Toast.LENGTH_SHORT).show();
                     bd.close();
                     finish();
                     startActivity(iMain);
@@ -63,11 +63,10 @@ public class RegistrarUsuario extends AppCompatActivity {
         EditText nombreCaja = findViewById(R.id.nombreUsuarioRegistro);
         String nombre = nombreCaja.getText().toString();
         if (nombre.equals("")){
-            Toast.makeText(getApplicationContext(),"El nombre no puede estar vacío.", Toast.LENGTH_LONG).show();
-            nombreCaja.setText("");
+            Toast.makeText(getApplicationContext(), getString(R.string.nombreVacio), Toast.LENGTH_SHORT).show();            nombreCaja.setText("");
             valido = false;
         } else if (nombre.length() > 21) {
-            Toast.makeText(getApplicationContext(),"El nombre no puede tener más de 20 letras.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.nombreLargo), Toast.LENGTH_SHORT).show();
             nombreCaja.setText("");
             valido = false;
         }
@@ -77,26 +76,26 @@ public class RegistrarUsuario extends AppCompatActivity {
         EditText confirmarCaja = findViewById(R.id.confirmarContrasena);
         String confContrasena = confirmarCaja.getText().toString();
         if (!confContrasena.equals(contrasena)){
-            Toast.makeText(getApplicationContext(),"Las contraseñas no coindicen.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.contraNoCoincide), Toast.LENGTH_SHORT).show();
             contrasenaCaja.setText("");
             confirmarCaja.setText("");
             valido = false;
         } else {
             if (contrasena.equals("")){
-                Toast.makeText(getApplicationContext(),"La contraseña no puede estar vacía.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.contraVacia), Toast.LENGTH_SHORT).show();
                 contrasenaCaja.setText("");
                 valido = false;
             } else if (contrasena.length() > 21) {
-                Toast.makeText(getApplicationContext(),"La contraseña no puede tener más de 20 letras.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.contraLarga), Toast.LENGTH_SHORT).show();
                 contrasenaCaja.setText("");
                 valido = false;
             }
             if (confContrasena.equals("")){
-                Toast.makeText(getApplicationContext(),"La contraseña de confirmación no puede estar vacía.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.contraConfVacia), Toast.LENGTH_SHORT).show();
                 confirmarCaja.setText("");
                 valido = false;
             } else if (confContrasena.length() > 21) {
-                Toast.makeText(getApplicationContext(),"La contraseña de confirmación no puede tener más de 20 letras.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.contraConfLarga), Toast.LENGTH_SHORT).show();
                 confirmarCaja.setText("");
                 valido = false;
             }
@@ -112,7 +111,7 @@ public class RegistrarUsuario extends AppCompatActivity {
         cu.close();
         bd.close();
         if (cursorCount >= 1) {
-            Toast.makeText(getApplicationContext(),"Ese nombre ya está en uso, prueba con otro.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.nombreEnUso), Toast.LENGTH_SHORT).show();
             nombreCaja.setText("");
             valido = false;
         }

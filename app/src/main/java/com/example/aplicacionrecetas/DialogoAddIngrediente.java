@@ -29,7 +29,6 @@ public class DialogoAddIngrediente extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Añade un nuevo ingrediente:");
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View vista = inflater.inflate(R.layout.dialog_add_ingrediente, null);
@@ -68,21 +67,24 @@ public class DialogoAddIngrediente extends DialogFragment {
                 bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
                 bd.close();
 
-                Toast.makeText(getActivity().getApplicationContext(),"Ingrediente añadido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(),getString(R.string.ingredienteAnadido), Toast.LENGTH_SHORT).show();
                 cajaIngrediente.setText("");
             }
         });
 
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        Button volver = vista.findViewById(R.id.buttonBack);
+        volver.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dismiss();
             }
         });
 
-        builder.setNeutralButton("Ver ingredientes", new DialogInterface.OnClickListener() {
+        Button verIngredientes = vista.findViewById(R.id.buttonVerIngredientes);
+
+        verIngredientes.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 DialogFragment dialogoVerIngredientes = new DialogoVerIngredientes();
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("listaIngredientes", listaIngredientes);

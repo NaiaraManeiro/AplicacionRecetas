@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
             nombreUsuario = extras.getString("nombre");
         }
 
-        this.deleteDatabase("RecetasBD");
-        anadirImagenes();
+        //this.deleteDatabase("RecetasBD");
+        //anadirImagenes();
 
         //Creamos el carrousel de imágenes
         ImageView rocketImage = findViewById(R.id.recetasCarrousel);
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String nomReceta = buscador.getQuery().toString();
                 if (nomReceta.equals("")) {
-                    Toast.makeText(getApplicationContext(),"Que no se te olvide escribir el nombre de la receta!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.buscadorVacio), Toast.LENGTH_SHORT).show();
                 } else {
                     String nombreReceta = existeReceta(nomReceta);
                     buscador.setQuery("", false);
@@ -118,17 +118,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Funcionamiento del botón del idioma
+        Button idioma = findViewById(R.id.buttonIdioma);
+        idioma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogoIdioma = new DialogoIdiomas();
+                dialogoIdioma.show(getSupportFragmentManager(), "idiomas");
+            }
+        });
+
         //Funcionamiento de los botones inferiores
 
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarPerfil = findViewById(R.id.botonRegistrarPerfil);
 
         if (!iniciarSesion) {
-            iniciarAdd.setText("Iniciar sesión");
-            registrarPerfil.setText("Registrarse");
+            iniciarAdd.setText(getString(R.string.inicioSesion));
+            registrarPerfil.setText(getString(R.string.registro));
         } else {
-            iniciarAdd.setText("Añadir receta");
-            registrarPerfil.setText("Ir al perfil");
+            iniciarAdd.setText(getString(R.string.addReceta));
+            registrarPerfil.setText(getString(R.string.perfil));
         }
 
         Intent iLogin = new Intent(this, IniciarSesion.class);

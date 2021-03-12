@@ -40,18 +40,18 @@
 
     <EditText
         android:id="@+id/confirmarContrasena"
+        style="@style/EditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="24dp"
-        android:hint="Confirmar contraseña"
+        android:hint="@string/confirmarContrasena"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro"
-        style="@style/EditText"/>
+        app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro" />
 
     <ImageView
         android:id="@+id/imagenRegistro"
@@ -75,7 +75,7 @@
         android:layout_marginRight="72dp"
         android:layout_marginBottom="64dp"
         android:enabled="true"
-        android:text="Registrarse"
+        android:text="@string/registro"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro"
@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
-        android:text="Volver"
+        android:text="@string/volver"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/registroBoton"
         app:layout_constraintHorizontal_bias="0.115"

@@ -115,14 +115,14 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 cu.close();
                 bd.close();
                 if (nombreReceta.equals("")) {
-                    Toast.makeText(getApplicationContext(),"Que no se te olvide escribir el nombre de la receta!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toastNombreReceta), Toast.LENGTH_SHORT).show();
                 } else if (count > 0) {
-                    Toast.makeText(getApplicationContext(),"Ese nombre ya existe, piensa otro para tu receta.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toastNameExist), Toast.LENGTH_SHORT).show();
                     cajaNombreReceta.setText("");
                 } else if (pasos.equals("")) {
-                    Toast.makeText(getApplicationContext(),"Que no se te olviden escribir los pasos de la receta!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toastPasosReceta), Toast.LENGTH_SHORT).show();
                 } else if (in == null) {
-                    Toast.makeText(getApplicationContext(),"Que no se te olviden escribir los ingredientes de la receta!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.toastIngredientesReceta), Toast.LENGTH_SHORT).show();
                 } else {
                     ImageView imagenReceta = findViewById(R.id.imagenNuevaReceta);
                     Bitmap icon = ((BitmapDrawable)imagenReceta.getDrawable()).getBitmap();
@@ -147,8 +147,8 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                         NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
                         elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
                                 .setSmallIcon(android.R.drawable.stat_sys_warning)
-                                .setContentTitle("Receta añadida!")
-                                .setContentText("La receta '"+nombreReceta+"' ha sido añadida.")
+                                .setContentTitle(getText(R.string.notiRecetaAnadida))
+                                .setContentText(getString(R.string.notiLaReceta)+" '"+nombreReceta+"' "+getString(R.string.notiHaSidoAñadida))
                                 .setVibrate(new long[]{0, 1000, 500, 1000})
                                 .setAutoCancel(true);
                         elCanal.enableLights(true);

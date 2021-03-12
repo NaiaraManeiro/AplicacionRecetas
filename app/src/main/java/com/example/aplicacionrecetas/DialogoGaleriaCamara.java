@@ -90,7 +90,7 @@ public class DialogoGaleriaCamara extends DialogFragment {
     private void comprobarPermisoCamara() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
-                Toast.makeText(getActivity().getApplicationContext(),"Si quieres sacar fotos tienes que aceptar el permiso.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.aceptarPermiso), Toast.LENGTH_SHORT).show();
             }
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, CODIGO_DE_PERMISO);
         }

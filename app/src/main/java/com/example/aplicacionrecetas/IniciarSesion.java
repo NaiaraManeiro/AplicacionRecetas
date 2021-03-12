@@ -44,7 +44,7 @@ public class IniciarSesion extends AppCompatActivity {
                     cu.close();
                     bd.close();
                     if (cursorCount == 0) {
-                        Toast.makeText(getApplicationContext(),"Nombre o contraseña incorrectas", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),getString(R.string.nomContrIncorrectas), Toast.LENGTH_SHORT).show();
                         nombreCaja.setText("");
                         contrasenaCaja.setText("");
                     } else {
@@ -84,12 +84,12 @@ public class IniciarSesion extends AppCompatActivity {
         EditText nombreCaja = findViewById(R.id.nombreUsuario);
         String nombre = nombreCaja.getText().toString();
         if (nombre.equals("")){
-            Toast.makeText(getApplicationContext(),"El nombre no puede estar vacío.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.nombreVacio), Toast.LENGTH_SHORT).show();
             nombreCaja.setText("");
             valido = false;
         }
         if (nombre.length() > 21) {
-            Toast.makeText(getApplicationContext(),"El nombre no puede tener más de 20 letras.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.nombreLargo), Toast.LENGTH_SHORT).show();
             nombreCaja.setText("");
             valido = false;
         }
@@ -97,12 +97,12 @@ public class IniciarSesion extends AppCompatActivity {
         EditText contrasenaCaja = findViewById(R.id.contrasena);
         String contrasena = contrasenaCaja.getText().toString();
         if (contrasena.equals("")){
-            Toast.makeText(getApplicationContext(),"La contraseña no puede estar vacía.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.contraVacia), Toast.LENGTH_SHORT).show();
             contrasenaCaja.setText("");
             valido = false;
         }
         if (contrasena.length() > 21) {
-            Toast.makeText(getApplicationContext(),"La contraseña no puede tener más de 20 letras.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.contraLarga), Toast.LENGTH_SHORT).show();
             contrasenaCaja.setText("");
             valido = false;
         }

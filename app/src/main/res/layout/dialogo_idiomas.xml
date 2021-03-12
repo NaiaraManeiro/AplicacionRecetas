@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="140dp"
-            android:text="@string/obtenerImagen"
+            android:text="@string/idioma"
             app:layout_constraintBottom_toTopOf="@+id/buttonVolver"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -35,32 +35,32 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/imagenCamara"
+            android:id="@+id/imagenCastellano"
             android:layout_width="115dp"
             android:layout_height="108dp"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="52dp"
-            android:background="@drawable/camara"
+            android:background="@drawable/espanol"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/camara" />
+            app:srcCompat="@drawable/espanol" />
 
         <ImageView
-            android:id="@+id/imagenGaleria"
-            android:layout_width="195dp"
-            android:layout_height="100dp"
+            android:id="@+id/imagenIngles"
+            android:layout_width="119dp"
+            android:layout_height="68dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/galeria"
+            android:layout_marginTop="75dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/ingles"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.534"
             app:layout_constraintStart_toEndOf="@+id/imagenCamara"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/galeria" />
+            tools:srcCompat="@drawable/ingles" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

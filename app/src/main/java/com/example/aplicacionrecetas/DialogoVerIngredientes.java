@@ -33,7 +33,7 @@ public class DialogoVerIngredientes extends DialogFragment {
         }
 
         if(!infoReceta) {
-            builder.setTitle("*Pulsa un ingrediente para borrarlo.");
+            builder.setTitle(getString(R.string.pulsaBorrar));
 
             BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
             SQLiteDatabase bd = GestorDB.getWritableDatabase();

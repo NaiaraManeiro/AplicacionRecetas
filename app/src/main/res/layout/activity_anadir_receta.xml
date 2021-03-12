@@ -9,6 +9,7 @@
 
     <EditText
         android:id="@+id/pasosSeguir"
+        style="@style/Texto"
         android:layout_width="370dp"
         android:layout_height="379dp"
         android:ems="10"
@@ -23,12 +24,13 @@
 
     <EditText
         android:id="@+id/nombreNuevaReceta"
-        android:layout_width="209dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="48dp"
-        android:hint="Nombre de receta"
+        style="@style/Texto"
+        android:layout_width="206dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="32dp"
+        android:hint="@string/nomReceta"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.604"
         app:layout_constraintStart_toEndOf="@+id/imagenNuevaReceta"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:text="Volver"
+        android:text="@string/volver"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/botonAddReceta"
         app:layout_constraintHorizontal_bias="0.566"
@@ -46,12 +48,13 @@
 
     <TextView
         android:id="@+id/textPasos"
+        style="@style/Texto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="24dp"
-        android:text="Pasos a seguir:"
+        android:layout_marginStart="22dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/recetaPasos"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imagenNuevaReceta" />
 
@@ -63,7 +66,7 @@
         android:layout_marginEnd="60dp"
         android:layout_marginRight="60dp"
         android:layout_marginBottom="24dp"
-        android:text="Añadir receta"
+        android:text="@string/addReceta"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -86,7 +89,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Añadir ingredientes"
+        android:text="@string/addIngredientes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.631"
         app:layout_constraintStart_toEndOf="@+id/imagenNuevaReceta"
