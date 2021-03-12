@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo1"
+    tools:context=".RegistrarUsuario">
+
+
+    <EditText
+        android:id="@+id/nombreUsuarioRegistro"
+        style="@style/EditText"
+        android:layout_width="454dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="@string/nomUsuario"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imagenRegistro"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/confirmarContrasena"
+        style="@style/EditText"
+        android:layout_width="454dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/confirmarContrasena"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imagenRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/contrasenaRegistro" />
+
+    <EditText
+        android:id="@+id/contrasenaRegistro"
+        style="@style/EditText"
+        android:layout_width="454dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/contrasena"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imagenRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/nombreUsuarioRegistro" />
+
+    <ImageView
+        android:id="@+id/imagenRegistro"
+        android:layout_width="207dp"
+        android:layout_height="311dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/registroimagen" />
+
+    <Button
+        android:id="@+id/registroBoton"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
+        android:enabled="true"
+        android:text="@string/registro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmarContrasena" />
+
+    <Button
+        android:id="@+id/volverRegistro"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginLeft="70dp"
+        android:text="@string/volver"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imagenRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/confirmarContrasena" />
+</androidx.constraintlayout.widget.ConstraintLayout>

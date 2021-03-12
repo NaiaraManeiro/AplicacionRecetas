@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo1"
+    tools:context=".IniciarSesion">
+
+    <EditText
+        android:id="@+id/nombreUsuario"
+        style="@style/EditText"
+        android:layout_width="454dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="@string/nomUsuario"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toEndOf="@+id/imagenInicioSesion"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/linkRegistro"
+        style="@style/Texto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:text="@string/linkRegistro"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toEndOf="@+id/imagenInicioSesion" />
+
+    <Button
+        android:id="@+id/loginBoton"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
+        android:enabled="true"
+        android:text="@string/inicioSesion"
+        app:layout_constraintBottom_toTopOf="@+id/linkRegistro"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contrasena" />
+
+    <EditText
+        android:id="@+id/contrasena"
+        style="@style/EditText"
+        android:layout_width="454dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/contrasena"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imagenInicioSesion"
+        app:layout_constraintTop_toBottomOf="@+id/nombreUsuario" />
+
+    <ImageView
+        android:id="@+id/imagenInicioSesion"
+        android:layout_width="207dp"
+        android:layout_height="311dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/inicioicono" />
+
+    <Button
+        android:id="@+id/volverInicio"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginLeft="70dp"
+        android:text="@string/volver"
+        app:layout_constraintBottom_toTopOf="@+id/linkRegistro"
+        app:layout_constraintStart_toEndOf="@+id/imagenInicioSesion"
+        app:layout_constraintTop_toBottomOf="@+id/contrasena" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

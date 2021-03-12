@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo1"
+    tools:context=".UsuarioPerfil">
+
+    <Button
+        android:id="@+id/volverMenuBoton"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/volverMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/usuarioRecetas"
+        app:layout_constraintTop_toBottomOf="@+id/nombreUsuarioText"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/cerrarSesionBoton"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/cerrarSesion"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/volverMenuBoton"
+        app:layout_constraintHorizontal_bias="0.222"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textUsuarioRecetas"
+        style="@style/Texto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/misRecetas"
+        app:layout_constraintEnd_toStartOf="@+id/usuarioRecetas"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toEndOf="@+id/iconoUsuario"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/botonNewReceta"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/addReceta"
+        app:layout_constraintBottom_toTopOf="@+id/nombreUsuarioText"
+        app:layout_constraintEnd_toStartOf="@+id/usuarioRecetas"
+        app:layout_constraintStart_toEndOf="@+id/iconoUsuario"
+        app:layout_constraintTop_toBottomOf="@+id/textUsuarioRecetas" />
+
+    <TextView
+        android:id="@+id/nombreUsuarioText"
+        style="@style/Texto"
+        android:layout_width="286dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/cerrarSesionBoton"
+        app:layout_constraintEnd_toStartOf="@+id/usuarioRecetas"
+        app:layout_constraintHorizontal_bias="0.183"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/usuarioRecetas"
+        android:layout_width="350dp"
+        android:layout_height="310dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iconoUsuario"
+        android:layout_width="132dp"
+        android:layout_height="151dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/nombreUsuarioText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.432"
+        app:srcCompat="@drawable/usuarioicono" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

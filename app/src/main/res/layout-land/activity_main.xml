@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo1"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/botonBuscarRecetas"
+        style="@style/BotonBuscar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/buscarReceta"
+        app:layout_constraintBottom_toTopOf="@+id/botonRegistrarPerfil"
+        app:layout_constraintEnd_toEndOf="@+id/listaBuscador"
+        app:layout_constraintStart_toStartOf="@+id/listaBuscador" />
+
+    <Button
+        android:id="@+id/botonIniciarAdd"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="140dp"
+        android:layout_marginLeft="140dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonIdioma"
+        app:layout_constraintTop_toBottomOf="@+id/botonBuscarRecetas"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <Button
+        android:id="@+id/botonRegistrarPerfil"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/botonIniciarAdd" />
+
+    <SearchView
+        android:id="@+id/buscador"
+        android:layout_width="330dp"
+        android:layout_height="39dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/negroDifuminado"
+        android:queryHint="@string/buscarRecetas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
+
+    <ListView
+        android:id="@+id/listaBuscador"
+        android:layout_width="330dp"
+        android:layout_height="69dp"
+        android:layout_below="@+id/buscador"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/botonBuscarRecetas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.636"
+        app:layout_constraintStart_toEndOf="@+id/recetasCarrousel"
+        app:layout_constraintTop_toBottomOf="@+id/buscador" />
+
+    <ImageView
+        android:id="@+id/recetasCarrousel"
+        style="@style/ImageBorder"
+        android:layout_width="350dp"
+        android:layout_height="160dp"
+        app:layout_constraintEnd_toStartOf="@+id/buscador"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="360dp"
+        android:layout_height="86dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <Button
+        android:id="@+id/buttonIdioma"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cambiarIdioma"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buscador"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recetasCarrousel" />
+</androidx.constraintlayout.widget.ConstraintLayout>
