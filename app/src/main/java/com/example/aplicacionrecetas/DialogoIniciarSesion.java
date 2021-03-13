@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,33 +20,39 @@ public class DialogoIniciarSesion extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Vaya... No hay una sesión iniciada");
-        builder.setMessage("Tienes que iniciar sesión o registrarte para poder crear una nueva receta.");
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View vista = inflater.inflate(R.layout.dialogo_iniciar_sesion, null);
 
         Intent iInicio = new Intent(getActivity(), IniciarSesion.class);
-        builder.setPositiveButton("Iniciar sesión", new DialogInterface.OnClickListener() {
+        Button inicio = vista.findViewById(R.id.buttonInicio);
+        inicio.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dismiss();
                 startActivity(iInicio);
             }
         });
 
-        builder.setNegativeButton("Volver", new DialogInterface.OnClickListener() {
+        Button volver = vista.findViewById(R.id.buttonVolverInicio);
+        volver.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dismiss();
             }
         });
 
         Intent iRegistro = new Intent(getActivity(), RegistrarUsuario.class);
-        builder.setNeutralButton("Registrarse", new DialogInterface.OnClickListener() {
+        Button registro = vista.findViewById(R.id.buttonRegistro);
+        registro.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dismiss();
                 startActivity(iRegistro);
             }
         });
+
+        builder.setView(vista);
 
         return builder.create();
     }

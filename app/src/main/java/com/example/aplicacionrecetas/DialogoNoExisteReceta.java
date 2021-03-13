@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,13 +21,15 @@ public class DialogoNoExisteReceta extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("No existe la receta que estás buscando...");
-        builder.setMessage("Prueba a crear una nueva receta!");
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View vista = inflater.inflate(R.layout.dialogo_no_existe_receta, null);
 
         Intent iAnadir = new Intent(getActivity(), AnadirReceta.class);
-        builder.setPositiveButton("Crear receta", new DialogInterface.OnClickListener() {
+        Button crearReceta = vista.findViewById(R.id.crearRecetaBoton);
+        crearReceta.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 Bundle bundle = getArguments();
                 boolean inicioSesion = bundle.getBoolean("inicioSesion");
                 if (inicioSesion) {
@@ -40,12 +43,16 @@ public class DialogoNoExisteReceta extends DialogFragment {
             }
         });
 
-        builder.setNegativeButton("Volver", new DialogInterface.OnClickListener() {
+        Button volver = vista.findViewById(R.id.volverBoton);
+        volver.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dismiss();
             }
         });
+
+        builder.setView(vista);
+
         return builder.create();
     }
 }

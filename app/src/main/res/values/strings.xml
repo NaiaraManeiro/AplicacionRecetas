@@ -12,7 +12,7 @@
     <string name="nombre">Nombre:</string>
     <string name="recetaPasos">Pasos a seguir:</string>
     <string name="verIngredientes">Ver ingredientes</string>
-    <string name="addReceta">Añadir receta</string>
+    <string name="addReceta">Crear receta</string>
     <string name="misRecetas">Mis recetas:</string>
     <string name="cerrarSesion">Cerrar sesión</string>
     <string name="volverMenu">Volver al menú</string>
@@ -46,4 +46,8 @@
     <string name="contraConfVacia">La contraseña de confirmación no puede estar vacía.</string>
     <string name="contraConfLarga">La contraseña de confirmación no puede tener más de 20 letras.</string>
     <string name="nombreEnUso">Ese nombre ya está en uso, prueba con otro.</string>
+    <string name="recetaNoExiste">No existe la receta que estás buscando...</string>
+    <string name="dialogNuevaReceta">Prueba a crear una nueva receta!</string>
+    <string name="noSesionIniciada">Vaya... No hay una sesión iniciada.</string>
+    <string name="inicioRegistro">Tienes que iniciar sesión o registrarte para poder crear una nueva receta.</string>
 </resources>

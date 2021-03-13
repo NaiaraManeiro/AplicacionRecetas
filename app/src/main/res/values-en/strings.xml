@@ -7,7 +7,7 @@
     <string name="inicioSesion">Sign in</string>
     <string name="cerrarSesion">Sign out</string>
     <string name="misRecetas">My recipes</string>
-    <string name="addReceta">Add recipe</string>
+    <string name="addReceta">Create recipe</string>
     <string name="nombre">Name:</string>
     <string name="buscarRecetas">Search recipies…</string>
     <string name="registro">Sign up</string>
@@ -47,4 +47,8 @@
     <string name="contraConfVacia">The confirmation password cannot be empty.</string>
     <string name="contraConfLarga">The confirmation password cannot have more than 20 letters.</string>
     <string name="nombreEnUso">That name is already in use, try another.</string>
+    <string name="recetaNoExiste">There is no recipe you are looking for ...</string>
+    <string name="dialogNuevaReceta">Try creating a new recipe!</string>
+    <string name="noSesionIniciada">Oops ... You are not signed in.</string>
+    <string name="inicioRegistro">You have to sign in or sign up to be able to create a new recipe.</string>
 </resources>

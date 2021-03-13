@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@drawable/dialog">
+
+        <Button
+            android:id="@+id/volverBoton"
+            style="@style/Botones"
+            android:layout_width="160dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/volver"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/crearRecetaBoton"
+            style="@style/Botones"
+            android:layout_width="160dp"
+            android:layout_height="46dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/addReceta"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/recetaNoExiste"
+            style="@style/Titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/recetaNoExiste"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/dialogoNuevaReceta"
+            style="@style/Texto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/dialogNuevaReceta"
+            app:layout_constraintBottom_toTopOf="@+id/volverBoton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recetaNoExiste" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="97dp"
+            android:layout_height="68dp"
+            app:layout_constraintBottom_toTopOf="@+id/crearRecetaBoton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dialogoNuevaReceta"
+            app:layout_constraintTop_toBottomOf="@+id/recetaNoExiste"
+            app:srcCompat="@drawable/dialogonuevareceta" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
