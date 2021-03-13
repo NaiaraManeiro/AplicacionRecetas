@@ -24,7 +24,7 @@ public class DialogoVerIngredientes extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -40,11 +40,9 @@ public class DialogoVerIngredientes extends DialogFragment {
             String[] campos = new String[] {"Ingredientes"};
             Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'",null,null,null,null);
 
-            while (cu.moveToNext()){
+            while (cu.moveToNext()) {
                 String ingrediente = cu.getString(0);
-                if (ingrediente == null) {
-                    ingredientes = listaIngredientes.toArray(new CharSequence[listaIngredientes.size()]);
-                } else if (cu.getCount() > 0) {
+                if (ingrediente != null) {
                     ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(ingrediente.split(",")));
                     ingredientes = arrayIngredientes.toArray(new CharSequence[arrayIngredientes.size()]);
                 }
@@ -65,7 +63,7 @@ public class DialogoVerIngredientes extends DialogFragment {
                             nuevaLista.add((String) ingredientes[j]);
                         }
                     }
-                    ingredientes = nuevaLista.toArray(new CharSequence[listaIngredientes.size()]);
+                    ingredientes = nuevaLista.toArray(new CharSequence[nuevaLista.size()]);
                     String commaseparatedlist = nuevaLista.toString();
                     String ingredientesNuevos = commaseparatedlist.replace("[", "")
                             .replace("]", "")

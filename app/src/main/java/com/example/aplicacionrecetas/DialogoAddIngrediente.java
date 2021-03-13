@@ -49,6 +49,7 @@ public class DialogoAddIngrediente extends DialogFragment {
                     String ingredienteS = cu.getString(0);
                     if (cu.getCount() > 0 && ingredienteS != null) {
                         ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(ingredienteS.split(",")));
+                        listaIngredientes = new ArrayList<>();
                         listaIngredientes.addAll(arrayIngredientes);
                     }
                     listaIngredientes.add(ingrediente);
@@ -86,9 +87,6 @@ public class DialogoAddIngrediente extends DialogFragment {
             @Override
             public void onClick(View v) {
                 DialogFragment dialogoVerIngredientes = new DialogoVerIngredientes();
-                Bundle bundle = new Bundle();
-                bundle.putStringArrayList("listaIngredientes", listaIngredientes);
-                dialogoVerIngredientes.setArguments(bundle);
                 dialogoVerIngredientes.show(getActivity().getSupportFragmentManager(), "verIngredientes");
             }
         });

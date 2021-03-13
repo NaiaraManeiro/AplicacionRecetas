@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
             nombreUsuario = extras.getString("nombre");
         }
 
-        //this.deleteDatabase("RecetasBD");
-        //anadirImagenes();
+        this.deleteDatabase("RecetasBD");
+        anadirImagenes();
 
         //Creamos el carrousel de imágenes
         ImageView rocketImage = findViewById(R.id.recetasCarrousel);

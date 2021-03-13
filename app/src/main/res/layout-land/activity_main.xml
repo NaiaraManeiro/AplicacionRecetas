@@ -72,7 +72,6 @@
 
     <ImageView
         android:id="@+id/recetasCarrousel"
-        style="@style/ImageBorder"
         android:layout_width="350dp"
         android:layout_height="160dp"
         app:layout_constraintEnd_toStartOf="@+id/buscador"
