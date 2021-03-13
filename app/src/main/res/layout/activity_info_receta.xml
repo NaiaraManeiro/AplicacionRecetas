@@ -83,4 +83,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.813" />
 
+    <Button
+        android:id="@+id/buttonDescargar"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="14dp"
+        android:text="@string/descargarReceta"
+        app:layout_constraintBottom_toTopOf="@+id/pasosSeguir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.655"
+        app:layout_constraintStart_toEndOf="@+id/textPasos"
+        app:layout_constraintTop_toBottomOf="@+id/botonVerIngredientes"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

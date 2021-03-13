@@ -186,7 +186,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
                         elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
-                                .setSmallIcon(android.R.drawable.stat_sys_warning)
+                                .setSmallIcon(R.drawable.suma)
                                 .setContentTitle(getText(R.string.notiRecetaAnadida))
                                 .setContentText(getString(R.string.notiLaReceta)+" '"+nombreReceta+"' "+getString(R.string.notiHaSidoAñadida))
                                 .setVibrate(new long[]{0, 1000, 500, 1000})

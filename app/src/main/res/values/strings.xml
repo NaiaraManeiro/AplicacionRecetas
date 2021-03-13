@@ -50,4 +50,7 @@
     <string name="dialogNuevaReceta">Prueba a crear una nueva receta!</string>
     <string name="noSesionIniciada">Vaya... No hay una sesión iniciada.</string>
     <string name="inicioRegistro">Tienes que iniciar sesión o registrarte para poder crear una nueva receta.</string>
+    <string name="descargarReceta">Descargar receta</string>
+    <string name="recetaDescargada">Receta descargada!</string>
+    <string name="notiDescarga">ha sido descargada.</string>
 </resources>

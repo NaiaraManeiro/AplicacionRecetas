@@ -51,4 +51,7 @@
     <string name="dialogNuevaReceta">Try creating a new recipe!</string>
     <string name="noSesionIniciada">Oops ... You are not signed in.</string>
     <string name="inicioRegistro">You have to sign in or sign up to be able to create a new recipe.</string>
+    <string name="descargarReceta">Download recipe</string>
+    <string name="recetaDescargada">Recipe downloaded!</string>
+    <string name="notiDescarga">has been downloaded.</string>
 </resources>

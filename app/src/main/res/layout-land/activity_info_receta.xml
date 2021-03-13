@@ -22,11 +22,11 @@
         style="@style/Botones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/volverMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pasosSeguir"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nombreReceta" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textPasos"
@@ -77,5 +77,17 @@
         app:layout_constraintEnd_toStartOf="@+id/pasosSeguir"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imagenReceta" />
+
+    <Button
+        android:id="@+id/buttonDescargar"
+        style="@style/Botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/descargarReceta"
+        app:layout_constraintBottom_toTopOf="@+id/volverMenu"
+        app:layout_constraintEnd_toStartOf="@+id/pasosSeguir"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nombreReceta" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
