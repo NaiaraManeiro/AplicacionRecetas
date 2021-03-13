@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -186,5 +187,18 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         if (imagen != null) {
             iconoUsuario.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            Intent iMain = new Intent(this, MainActivity.class);
+            iMain.putExtra("inicio", true);
+            iMain.putExtra("nombre", nombre);
+            finish();
+            startActivity(iMain);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

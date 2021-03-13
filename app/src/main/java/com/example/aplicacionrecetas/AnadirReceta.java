@@ -1,5 +1,6 @@
 package com.example.aplicacionrecetas;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -20,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -40,11 +42,22 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     private String nombreUsuario;
     private byte[] imagen;
     private ImageView imagenNuevaReceta;
+    private String recetaExiste;
+    private static final String STATE_NOMBRE = "nombreReceta";
+    private String nombreReceta;
+    private static final String STATE_PASOS = "pasosReceta";
+    private String pasosReceta = "";
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anadir_receta);
+
+        if (savedInstanceState != null) {
+            nombreReceta = savedInstanceState.getString(STATE_NOMBRE);
+            pasosReceta = savedInstanceState.getString(STATE_PASOS);
+        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -52,13 +65,24 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             nombreUsuario = extras.getString("usuario");
         }
 
-        //Creamos una receta para meter los datos
+        //Creamos una receta para meter los datos si no existe ya (por el giro de pantalla)
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        ContentValues nuevo = new ContentValues();
-        nuevo.put("Nombre", "NewReceta");
-        bd.insert("Receta", null, nuevo);
+        String[] campos = new String[] {"Nombre"};
+        Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
+        while (cu.moveToNext()){
+            recetaExiste = cu.getString(0);
+        }
+        cu.close();
         bd.close();
+
+        if (recetaExiste == null) {
+            bd = GestorDB.getWritableDatabase();
+            ContentValues nuevo = new ContentValues();
+            nuevo.put("Nombre", "NewReceta");
+            bd.insert("Receta", null, nuevo);
+            bd.close();
+        }
 
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
 
@@ -72,6 +96,22 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 dialogoCamaraGaleria.show(getSupportFragmentManager(), "galeriaCamara");
             }
         });
+
+        //Para que en el giro de pantalla no se pierda la imagen
+        bd = GestorDB.getWritableDatabase();
+        campos = new String[] {"Imagen"};
+        cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
+        CursorWindow cw = new CursorWindow("test", 50000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
+        ac.setWindow(cw);
+        while (ac.moveToNext()){
+            imagen = cu.getBlob(0);
+        }
+        cu.close();
+        bd.close();
+        if (imagen != null) {
+            imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
+        }
 
         Button anadirIngrediente = findViewById(R.id.botonAddIngrediente);
 
@@ -241,15 +281,31 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Nombre"};
-        Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
-        if (cu.getCount() > 0) {
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+            SQLiteDatabase bd = GestorDB.getWritableDatabase();
             bd.delete("Receta", "nombre='NewReceta'", null);
+            bd.close();
+            finish();
+            Intent iMain = new Intent(this, MainActivity.class);
+            Intent iPerfil = new Intent(this, UsuarioPerfil.class);
+            if (main) {
+                iMain.putExtra("usuario", nombreUsuario);
+                startActivity(iMain);
+            } else {
+                iPerfil.putExtra("nombre", nombreUsuario);
+                startActivity(iPerfil);
+            }
+            return true;
         }
-        bd.close();
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_NOMBRE, nombreReceta);
+        outState.putString(STATE_PASOS, pasosReceta);
     }
 }
