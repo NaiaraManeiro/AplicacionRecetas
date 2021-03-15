@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AplicacionRecetas</string>
+    <string name="app_name">Recetalandia</string>
     <string name="nomUsuario">Nombre de usuario</string>
     <string name="contrasena">Contraseña</string>
     <string name="buscarReceta">Buscar receta</string>

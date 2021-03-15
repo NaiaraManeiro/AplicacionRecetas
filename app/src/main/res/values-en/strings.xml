@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AplicacionRecetas</string>
+    <string name="app_name">Recetalandia</string>
     <string name="nomUsuario">User name</string>
     <string name="contrasena">Password</string>
     <string name="buscarReceta">Search recipe</string>
