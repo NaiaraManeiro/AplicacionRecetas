@@ -25,7 +25,7 @@
 
     <EditText
         android:id="@+id/nombreNuevaReceta"
-        style="@style/Texto"
+        style="@style/EditText"
         android:layout_width="206dp"
         android:layout_height="57dp"
         android:layout_marginTop="32dp"
@@ -75,10 +75,10 @@
 
     <ImageView
         android:id="@+id/imagenNuevaReceta"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
+        android:layout_width="130dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

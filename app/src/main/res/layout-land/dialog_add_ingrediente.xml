@@ -27,7 +27,7 @@
 
         <EditText
             android:id="@+id/nombreIngrediente"
-            style="@style/Texto"
+            style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
