@@ -74,6 +74,7 @@ public class InfoReceta extends AppCompatActivity {
             recetaNombre = extras.getString("nombreReceta");
         }
 
+        //Obtenemos todos los datos de la receta a mostrar
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Imagen", "Ingredientes", "PasosSeguir"};
@@ -133,6 +134,7 @@ public class InfoReceta extends AppCompatActivity {
         });
     }
 
+    //Para la descarga de la receta
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COD_NUEVO_FICHERO && resultCode == Activity.RESULT_OK) {

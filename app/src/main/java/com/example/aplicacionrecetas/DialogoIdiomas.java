@@ -42,6 +42,7 @@ public class DialogoIdiomas extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View vista = inflater.inflate(R.layout.dialogo_idiomas, null);
 
+        //Para poner el idioma en castellano
         ImageView castellano = vista.findViewById(R.id.imagenCastellano);
         castellano.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -55,6 +56,7 @@ public class DialogoIdiomas extends DialogFragment {
             }
         });
 
+        //Para poner el idioma en inglés
         ImageView ingles = vista.findViewById(R.id.imagenIngles);
         ingles.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

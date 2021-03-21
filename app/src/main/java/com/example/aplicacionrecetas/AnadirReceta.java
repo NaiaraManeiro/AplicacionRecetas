@@ -98,6 +98,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             bd.close();
         }
 
+        //Para añadir una foto de la receta
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
 
         imagenNuevaReceta.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +128,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
         }
 
+        //Para añadir un ingrediente
         Button anadirIngrediente = findViewById(R.id.botonAddIngrediente);
 
         anadirIngrediente.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +144,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this, "IdCanal");
         Intent iMain = new Intent(this, MainActivity.class);
         Intent iPerfil = new Intent(this, UsuarioPerfil.class);
-
+        //Para añadir la receta
         anadirReceta.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
@@ -243,6 +245,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         });
     }
 
+    //Cuando el dialogoGaleriaCamara se cierra viene a este método
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onDismiss(DialogInterface dialog) {

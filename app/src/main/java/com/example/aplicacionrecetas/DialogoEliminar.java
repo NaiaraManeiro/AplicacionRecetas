@@ -57,6 +57,7 @@ public class DialogoEliminar extends DialogFragment {
         ImageView si = vista.findViewById(R.id.imageSi);
         Intent iMain = new Intent(getActivity(), MainActivity.class);
         BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
+        //Eliminamos el usuario de la base de datos
         si.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

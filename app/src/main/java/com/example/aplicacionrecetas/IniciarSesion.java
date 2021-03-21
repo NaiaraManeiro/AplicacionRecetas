@@ -56,6 +56,7 @@ public class IniciarSesion extends AppCompatActivity {
                     EditText contrasenaCaja = findViewById(R.id.contrasena);
                     String contrasena = contrasenaCaja.getText().toString();
 
+                    //Comprobamos si el usuario existe o ha puesto bien la contraseña
                     SQLiteDatabase bd = GestorDB.getWritableDatabase();
                     String[] campos = new String[] {"Nombre", "Contrasena"};
                     String[] argumentos = new String[] {nombre, contrasena};
@@ -150,7 +151,5 @@ public class IniciarSesion extends AppCompatActivity {
         configuration.setLayoutDirection(nuevaloc);
         Context context = getBaseContext().createConfigurationContext(configuration);
         getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
-        //finish();
-        //startActivity(getIntent());
     }
 }

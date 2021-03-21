@@ -70,6 +70,7 @@ public class DialogoVerIngredientes extends DialogFragment {
             ingredientes = listaIngredientes.toArray(new CharSequence[listaIngredientes.size()]);
         }
 
+        //Mostramos los ingredientes que tiene la receta
         builder.setItems(ingredientes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

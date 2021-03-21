@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Funcionamiento de los botones inferiores
-
         Button iniciarAdd = findViewById(R.id.botonIniciarAdd);
         Button registrarPerfil = findViewById(R.id.botonRegistrarPerfil);
 
@@ -242,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 
+    //Añadir imagenes a las recetas cuando se vuelve a crear la base de datos
     private void anadirImagenes() {
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();

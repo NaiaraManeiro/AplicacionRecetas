@@ -45,6 +45,7 @@ public class RegistrarUsuario extends AppCompatActivity {
         Intent iMain = new Intent(this, MainActivity.class);
         Button registrarBoton = findViewById(R.id.registroBoton);
 
+        //Añadimos el usuario a la base de datos
         registrarBoton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

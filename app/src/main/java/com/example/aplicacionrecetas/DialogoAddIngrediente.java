@@ -52,7 +52,7 @@ public class DialogoAddIngrediente extends DialogFragment {
         View vista = inflater.inflate(R.layout.dialog_add_ingrediente, null);
 
         BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
-
+        //Para añadir el ingrediente
         Button anadir = vista.findViewById(R.id.anadirIngrediente);
         anadir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +66,7 @@ public class DialogoAddIngrediente extends DialogFragment {
                 while (cu.moveToNext()){
                     String ingredienteS = cu.getString(0);
                     if (cu.getCount() > 0 && ingredienteS != null) {
+                        //Añadimos el nuevo ingrediente a los existentes en caso de que haya
                         ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(ingredienteS.split(",")));
                         listaIngredientes = new ArrayList<>();
                         listaIngredientes.addAll(arrayIngredientes);
@@ -100,7 +101,7 @@ public class DialogoAddIngrediente extends DialogFragment {
         });
 
         Button verIngredientes = vista.findViewById(R.id.buttonVerIngredientes);
-
+        //Ver los ingedientes añadidos
         verIngredientes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
