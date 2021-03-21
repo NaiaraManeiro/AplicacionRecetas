@@ -54,4 +54,6 @@
     <string name="descargarReceta">Download recipe</string>
     <string name="recetaDescargada">Recipe downloaded!</string>
     <string name="notiDescarga">has been downloaded.</string>
+    <string name="eliminarUsuario">Are you sure you want to delete your account?</string>
+    <string name="guardar">Save</string>
 </resources>

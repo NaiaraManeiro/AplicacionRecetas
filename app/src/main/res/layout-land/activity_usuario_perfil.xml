@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="70dp"
         android:text="@string/misRecetas"
         app:layout_constraintEnd_toStartOf="@+id/usuarioRecetas"
         app:layout_constraintHorizontal_bias="0.495"
@@ -66,7 +66,7 @@
         style="@style/Texto"
         android:layout_width="286dp"
         android:layout_height="51dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toTopOf="@+id/cerrarSesionBoton"
         app:layout_constraintEnd_toStartOf="@+id/usuarioRecetas"
@@ -77,6 +77,7 @@
         android:id="@+id/usuarioRecetas"
         android:layout_width="350dp"
         android:layout_height="310dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
@@ -90,12 +91,32 @@
         android:layout_height="151dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="60dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/nombreUsuarioText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.432"
         app:srcCompat="@drawable/usuarioicono" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/labarra"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/dialog"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fragment_eliminar"
+        android:layout_width="411dp"
+        android:layout_height="257dp"
+        android:layout_marginTop="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

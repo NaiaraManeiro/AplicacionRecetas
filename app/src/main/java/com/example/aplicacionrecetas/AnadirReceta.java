@@ -199,7 +199,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     finish();
 
                     if (main) {
-                        iMain.putExtra("usuario", nombreUsuario);
+                        iMain.putExtra("nombre", nombreUsuario);
                         startActivity(iMain);
                     } else {
                         iPerfil.putExtra("nombre", nombreUsuario);
@@ -214,11 +214,12 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             @Override
             public void onClick(View v) {
                 SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                bd.delete("Receta", "nombre='NewReceta'", null);
+                bd.delete("Receta", "Nombre='NewReceta'", null);
                 bd.close();
                 finish();
                 if (main) {
-                    iMain.putExtra("usuario", nombreUsuario);
+                    iMain.putExtra("nombre", nombreUsuario);
+                    iMain.putExtra("inicio",true);
                     startActivity(iMain);
                 } else {
                     iPerfil.putExtra("nombre", nombreUsuario);
@@ -292,6 +293,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             Intent iPerfil = new Intent(this, UsuarioPerfil.class);
             if (main) {
                 iMain.putExtra("usuario", nombreUsuario);
+                iMain.putExtra("inicio",true);
                 startActivity(iMain);
             } else {
                 iPerfil.putExtra("nombre", nombreUsuario);

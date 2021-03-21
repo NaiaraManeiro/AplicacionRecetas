@@ -53,4 +53,6 @@
     <string name="descargarReceta">Descargar receta</string>
     <string name="recetaDescargada">Receta descargada!</string>
     <string name="notiDescarga">ha sido descargada.</string>
+    <string name="eliminarUsuario">¿Seguro que quieres eliminar tu cuenta?</string>
+    <string name="guardar">Guardar</string>
 </resources>

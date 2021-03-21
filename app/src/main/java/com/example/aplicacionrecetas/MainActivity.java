@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
             nombreUsuario = extras.getString("nombre");
         }
 
-        this.deleteDatabase("RecetasBD");
-        anadirImagenes();
+        //this.deleteDatabase("RecetasBD");
+        //anadirImagenes();
 
         //Creamos el carrousel de imágenes
         ImageView rocketImage = findViewById(R.id.recetasCarrousel);
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     finish();
                     iAddReceta.putExtra("main", true);
+                    iAddReceta.putExtra("inicio",true);
                     iAddReceta.putExtra("usuario", nombreUsuario);
                     startActivity(iAddReceta);
                 }

@@ -119,6 +119,7 @@ public class DialogoGaleriaCamara extends DialogFragment {
             Bundle extras = data.getExtras();
             icon = (Bitmap) extras.get("data");
         }
+
         //Galeria
         if (resultCode == RESULT_OK && requestCode == RESULT_LOAD_IMAGE){
             Uri imageUri = data.getData();
@@ -160,5 +161,4 @@ public class DialogoGaleriaCamara extends DialogFragment {
             ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
         }
     }
-
 }

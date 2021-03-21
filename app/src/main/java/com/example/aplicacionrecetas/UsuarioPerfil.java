@@ -3,8 +3,10 @@ package com.example.aplicacionrecetas;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -17,26 +19,29 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener{
+public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private String nombre;
     private byte[] imagen;
     private ImageView iconoUsuario;
     private String recetasUsuario;
     private String[] recetasNombre;
+    private ArrayList<byte[]> recetasFoto;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usuario_perfil);
+        setSupportActionBar(findViewById(R.id.labarra));
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -106,7 +111,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
 
         if (recetasUsuario != null) {
             recetasNombre = recetasUsuario.split(",");
-            ArrayList<byte[]> recetasFoto = new ArrayList<>();
+            recetasFoto = new ArrayList<>();
             GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
             for (String receta : recetasNombre) {
                 bd = GestorDB.getWritableDatabase();
@@ -124,7 +129,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
             cu.close();
             bd.close();
 
-            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre,recetasFoto);
+            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
             rv.setAdapter(eladaptador);
 
             GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
@@ -166,6 +171,36 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                 startActivity(iMain);
             }
         });
+    }
+
+    //Creación del menú para editar y eliminar un usuario
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.editar:{
+                DialogFragment dialogoEditarPerfil = new DialogoEditarPerfil();
+                Bundle bundle = new Bundle();
+                bundle.putString("nombreUsuario", nombre );
+                dialogoEditarPerfil.setArguments(bundle);
+                dialogoEditarPerfil.show(getSupportFragmentManager(), "eliminar");
+            }
+            case R.id.eliminar:{
+                DialogFragment dialogoEliminar = new DialogoEliminar();
+                Bundle bundle = new Bundle();
+                bundle.putString("nombreUsuario", nombre );
+                dialogoEliminar.setArguments(bundle);
+                dialogoEliminar.show(getSupportFragmentManager(), "eliminar");
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
