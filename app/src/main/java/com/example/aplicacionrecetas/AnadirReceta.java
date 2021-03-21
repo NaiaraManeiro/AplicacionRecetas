@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,6 +13,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
 import android.database.CursorWindow;
@@ -34,6 +37,7 @@ import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class AnadirReceta extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
@@ -52,6 +56,16 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Para mantener el idioma
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String idiomaL = prefs.getString("idioma", "es");
+        if (idiomaL.equals("es")) {
+            idioma(getString(R.string.locationES));
+        } else if (idiomaL.equals("en")) {
+            idioma(getString(R.string.locationEN));
+        }
+
         setContentView(R.layout.activity_anadir_receta);
 
         if (savedInstanceState != null) {
@@ -309,5 +323,16 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         super.onSaveInstanceState(outState);
         outState.putString(STATE_NOMBRE, nombreReceta);
         outState.putString(STATE_PASOS, pasosReceta);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void idioma(String idioma) {
+        Locale nuevaloc = new Locale(idioma);
+        Locale.setDefault(nuevaloc);
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
+        configuration.setLocale(nuevaloc);
+        configuration.setLayoutDirection(nuevaloc);
+        Context context = getBaseContext().createConfigurationContext(configuration);
+        getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 }

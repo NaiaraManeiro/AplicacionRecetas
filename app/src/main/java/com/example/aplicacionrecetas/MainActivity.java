@@ -1,16 +1,22 @@
 package com.example.aplicacionrecetas;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +28,7 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,9 +38,20 @@ public class MainActivity extends AppCompatActivity {
     private SearchView buscador;
     private String nombreUsuario;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Para mantener el idioma
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String idiomaL = prefs.getString("idioma", "es");
+        if (idiomaL.equals("es")) {
+            idioma(getString(R.string.locationES));
+        } else if (idiomaL.equals("en")) {
+            idioma(getString(R.string.locationEN));
+        }
+
         setContentView(R.layout.activity_main);
 
         Bundle extras = getIntent().getExtras();
@@ -211,6 +229,17 @@ public class MainActivity extends AppCompatActivity {
         cu.close();
         bd.close();
         return receta;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void idioma(String idioma) {
+        Locale nuevaloc = new Locale(idioma);
+        Locale.setDefault(nuevaloc);
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
+        configuration.setLocale(nuevaloc);
+        configuration.setLayoutDirection(nuevaloc);
+        Context context = getBaseContext().createConfigurationContext(configuration);
+        getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 
     private void anadirImagenes() {

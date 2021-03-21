@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import android.app.Activity;
 import android.app.NotificationChannel;
@@ -14,6 +15,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
 import android.database.CursorWindow;
@@ -40,6 +43,7 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 
 public class InfoReceta extends AppCompatActivity {
 
@@ -53,6 +57,16 @@ public class InfoReceta extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Para mantener el idioma
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String idiomaL = prefs.getString("idioma", "es");
+        if (idiomaL.equals("es")) {
+            idioma(getString(R.string.locationES));
+        } else if (idiomaL.equals("en")) {
+            idioma(getString(R.string.locationEN));
+        }
+
         setContentView(R.layout.activity_info_receta);
 
         Bundle extras = getIntent().getExtras();
@@ -153,5 +167,16 @@ public class InfoReceta extends AppCompatActivity {
             }
             elManager.notify(1, elBuilder.build());
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void idioma(String idioma) {
+        Locale nuevaloc = new Locale(idioma);
+        Locale.setDefault(nuevaloc);
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
+        configuration.setLocale(nuevaloc);
+        configuration.setLayoutDirection(nuevaloc);
+        Context context = getBaseContext().createConfigurationContext(configuration);
+        getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 }

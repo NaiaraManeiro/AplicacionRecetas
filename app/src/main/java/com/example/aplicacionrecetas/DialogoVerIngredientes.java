@@ -3,27 +3,45 @@ package com.example.aplicacionrecetas;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class DialogoVerIngredientes extends DialogFragment {
     private ArrayList<String> listaIngredientes = new ArrayList<>();
     private CharSequence[] ingredientes = new CharSequence[0];
     private boolean infoReceta = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
+
+        //Para mantener el idioma
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String idiomaL = prefs.getString("idioma", "es");
+        if (idiomaL.equals("es")) {
+            idioma(getString(R.string.locationES));
+        } else if (idiomaL.equals("en")) {
+            idioma(getString(R.string.locationEN));
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
 
         Bundle bundle = getArguments();
@@ -88,5 +106,16 @@ public class DialogoVerIngredientes extends DialogFragment {
         });
 
         return builder.create();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void idioma(String idioma) {
+        Locale nuevaloc = new Locale(idioma);
+        Locale.setDefault(nuevaloc);
+        Configuration configuration = getActivity().getBaseContext().getResources().getConfiguration();
+        configuration.setLocale(nuevaloc);
+        configuration.setLayoutDirection(nuevaloc);
+        Context context = getActivity().getBaseContext().createConfigurationContext(configuration);
+        getActivity().getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 }

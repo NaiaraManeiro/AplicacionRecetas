@@ -46,13 +46,16 @@
     <string name="contraConfVacia">La contraseña de confirmación no puede estar vacía.</string>
     <string name="contraConfLarga">La contraseña de confirmación no puede tener más de 20 letras.</string>
     <string name="nombreEnUso">Ese nombre ya está en uso, prueba con otro.</string>
-    <string name="recetaNoExiste">No existe la receta que estás buscando...</string>
+    <string name="recetaNoExiste">No existe la receta que estás buscando…</string>
     <string name="dialogNuevaReceta">Prueba a crear una nueva receta!</string>
-    <string name="noSesionIniciada">Vaya... No hay una sesión iniciada.</string>
+    <string name="noSesionIniciada">Vaya… No hay una sesión iniciada.</string>
     <string name="inicioRegistro">Tienes que iniciar sesión o registrarte para poder crear una nueva receta.</string>
     <string name="descargarReceta">Descargar receta</string>
     <string name="recetaDescargada">Receta descargada!</string>
     <string name="notiDescarga">ha sido descargada.</string>
     <string name="eliminarUsuario">¿Seguro que quieres eliminar tu cuenta?</string>
     <string name="guardar">Guardar</string>
+    <string name="locationES" translatable="false">es</string>
+    <string name="locationEN" translatable="false">en</string>
+    <string name="eliminar">Eliminar</string>
 </resources>

@@ -6,11 +6,15 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
 import android.database.CursorWindow;
@@ -27,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private String nombre;
@@ -40,6 +45,16 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Para mantener el idioma
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String idiomaL = prefs.getString("idioma", "es");
+        if (idiomaL.equals("es")) {
+            idioma(getString(R.string.locationES));
+        } else if (idiomaL.equals("en")) {
+            idioma(getString(R.string.locationEN));
+        }
+
         setContentView(R.layout.activity_usuario_perfil);
         setSupportActionBar(findViewById(R.id.labarra));
 
@@ -183,22 +198,12 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-            case R.id.editar:{
-                DialogFragment dialogoEditarPerfil = new DialogoEditarPerfil();
-                Bundle bundle = new Bundle();
-                bundle.putString("nombreUsuario", nombre );
-                dialogoEditarPerfil.setArguments(bundle);
-                dialogoEditarPerfil.show(getSupportFragmentManager(), "eliminar");
-            }
-            case R.id.eliminar:{
-                DialogFragment dialogoEliminar = new DialogoEliminar();
-                Bundle bundle = new Bundle();
-                bundle.putString("nombreUsuario", nombre );
-                dialogoEliminar.setArguments(bundle);
-                dialogoEliminar.show(getSupportFragmentManager(), "eliminar");
-            }
-
+        if (id == R.id.eliminar) {
+            DialogFragment dialogoEliminar = new DialogoEliminar();
+            Bundle bundle = new Bundle();
+            bundle.putString("nombreUsuario", nombre);
+            dialogoEliminar.setArguments(bundle);
+            dialogoEliminar.show(getSupportFragmentManager(), "eliminar");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -235,5 +240,16 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void idioma(String idioma) {
+        Locale nuevaloc = new Locale(idioma);
+        Locale.setDefault(nuevaloc);
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
+        configuration.setLocale(nuevaloc);
+        configuration.setLayoutDirection(nuevaloc);
+        Context context = getBaseContext().createConfigurationContext(configuration);
+        getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 }
