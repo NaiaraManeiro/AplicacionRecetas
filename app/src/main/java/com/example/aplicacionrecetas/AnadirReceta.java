@@ -5,7 +5,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -80,9 +84,18 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         }
 
         //Creamos una receta para meter los datos si no existe ya (por el giro de pantalla)
+        Data datos = new Data.Builder()
+                .putString("funcion", "crearReceta")
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Nombre"};
+        /*String[] campos = new String[] {"Nombre"};
         Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
         while (cu.moveToNext()){
             recetaExiste = cu.getString(0);
@@ -96,7 +109,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             nuevo.put("Nombre", "NewReceta");
             bd.insert("Receta", null, nuevo);
             bd.close();
-        }
+        }*/
 
         //Para añadir una foto de la receta
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
@@ -113,9 +126,9 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         });
 
         //Para que en el giro de pantalla no se pierda la imagen
-        bd = GestorDB.getWritableDatabase();
+        /*bd = GestorDB.getWritableDatabase();
         campos = new String[] {"Imagen"};
-        cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
+        cu = bd.query("Receta", campos, "Nombre='NewReceta'", null,null,null,null);
         CursorWindow cw = new CursorWindow("test", 50000000);
         AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
         ac.setWindow(cw);
@@ -126,7 +139,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         bd.close();
         if (imagen != null) {
             imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-        }
+        }*/
 
         //Para añadir un ingrediente
         Button anadirIngrediente = findViewById(R.id.botonAddIngrediente);
@@ -187,13 +200,25 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     byte[] data =  outputStream.toByteArray();
 
                     //Añadir a la base de datos la receta
-                    bd = GestorDB.getWritableDatabase();
+                    Data datos = new Data.Builder()
+                            .putString("funcion", "anadirReceta")
+                            .putString("nombreReceta", nombreReceta)
+                            .putByteArray("Imagen", data)
+                            .putString("PasosSeguir", pasos)
+                            .build();
+
+                    OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                            .setInputData(datos)
+                            .build();
+                    WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
+                    /*bd = GestorDB.getWritableDatabase();
                     ContentValues modificacion = new ContentValues();
                     modificacion.put("Nombre", nombreReceta);
                     modificacion.put("Imagen", data);
                     modificacion.put("PasosSeguir", pasos);
                     bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-                    bd.close();
+                    bd.close();*/
 
                     //Le añadimos la receta al usuario
                     anadirRecetaUsuario(nombreReceta, nombreUsuario);
@@ -229,9 +254,19 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
+                Data datos = new Data.Builder()
+                        .putString("funcion", "eliminarReceta")
+                        .putString("nombreReceta", "NewReceta")
+                        .build();
+
+                OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                        .setInputData(datos)
+                        .build();
+                WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
+                /*SQLiteDatabase bd = GestorDB.getWritableDatabase();
                 bd.delete("Receta", "Nombre='NewReceta'", null);
-                bd.close();
+                bd.close();*/
                 finish();
                 if (main) {
                     iMain.putExtra("nombre", nombreUsuario);
@@ -301,10 +336,20 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+            /*BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
             SQLiteDatabase bd = GestorDB.getWritableDatabase();
             bd.delete("Receta", "nombre='NewReceta'", null);
-            bd.close();
+            bd.close(); */
+            Data datos = new Data.Builder()
+                    .putString("funcion", "eliminarReceta")
+                    .putString("nombreReceta", "NewReceta")
+                    .build();
+
+            OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                    .setInputData(datos)
+                    .build();
+            WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
             finish();
             Intent iMain = new Intent(this, MainActivity.class);
             Intent iPerfil = new Intent(this, UsuarioPerfil.class);

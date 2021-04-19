@@ -2,19 +2,20 @@ package com.example.aplicacionrecetas;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,11 +42,8 @@ public class IniciarSesion extends AppCompatActivity {
 
         setContentView(R.layout.activity_iniciar_sesion);
 
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-
         Button iniciarBoton = findViewById(R.id.loginBoton);
         Intent iPerfil = new Intent(this, UsuarioPerfil.class);
-
         iniciarBoton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,24 +54,33 @@ public class IniciarSesion extends AppCompatActivity {
                     EditText contrasenaCaja = findViewById(R.id.contrasena);
                     String contrasena = contrasenaCaja.getText().toString();
 
-                    //Comprobamos si el usuario existe o ha puesto bien la contraseña
-                    SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                    String[] campos = new String[] {"Nombre", "Contrasena"};
-                    String[] argumentos = new String[] {nombre, contrasena};
-                    Cursor cu = bd.query("Usuario", campos,"Nombre=? AND Contrasena=?", argumentos,null,null,null);
-                    int cursorCount = cu.getCount();
-                    cu.close();
-                    bd.close();
-                    if (cursorCount == 0) {
-                        Toast.makeText(getApplicationContext(),getString(R.string.nomContrIncorrectas), Toast.LENGTH_SHORT).show();
-                        nombreCaja.setText("");
-                        contrasenaCaja.setText("");
-                    } else {
-                        iPerfil.putExtra("inicio",true);
-                        iPerfil.putExtra("nombre", nombre);
-                        finish();
-                        startActivity(iPerfil);
-                    }
+                    Data datos = new Data.Builder()
+                            .putString("nombre",nombre)
+                            .putString("contrasena",contrasena)
+                            .putString("inicioRegistro", "Inicio")
+                            .build();
+
+                    OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RegistroInicioWorker.class)
+                            .setInputData(datos)
+                            .build();
+                    WorkManager.getInstance(IniciarSesion.this).getWorkInfoByIdLiveData(otwr.getId())
+                            .observe(IniciarSesion.this, status -> {
+                                if (status != null && status.getState().isFinished()) {
+                                    String result = status.getOutputData().getString("resultado");
+                                    if (result.equals("Error")) {
+                                        Toast.makeText(getApplicationContext(), getString(R.string.nomContrIncorrectas), Toast.LENGTH_SHORT).show();
+                                        nombreCaja.setText("");
+                                        contrasenaCaja.setText("");
+                                    } else if (result.equals("Exito")) {
+                                        iPerfil.putExtra("inicio", true);
+                                        iPerfil.putExtra("nombre", nombre);
+                                        finish();
+                                        startActivity(iPerfil);
+                                    }
+                                }
+                            });
+
+                    WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
                 }
             }
         });
