@@ -22,9 +22,12 @@ import android.database.AbstractWindowedCursor;
 import android.database.Cursor;
 import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,9 +36,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private String nombre;
@@ -44,6 +61,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
     private String recetasUsuario;
     private String[] recetasNombre;
     private ArrayList<byte[]> recetasFoto;
+    private URL direccionImagenReceta;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -68,25 +86,36 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         }
 
         //Cargamos la imagen del usuario
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Icono"};
-        String[] argumentos = new String[] {nombre};
-        Cursor cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
-        CursorWindow cw = new CursorWindow("test", 50000000);
-        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
-        ac.setWindow(cw);
-        while (ac.moveToNext()){
-            imagen = cu.getBlob(0);
-        }
-        cu.close();
-        bd.close();
 
         iconoUsuario = findViewById(R.id.iconoUsuario);
 
-        if (imagen != null) {
-            iconoUsuario.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-        }
+        Data datos = new Data.Builder()
+                .putString("funcion", "obtenerImagenUsuario")
+                .putString("nombreUsuario", nombre)
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(UsuarioPerfil.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+                        if (result != null) {
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                            StorageReference pathReference = storageRef.child(result);
+                            pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(getApplicationContext()).load(uri).into(iconoUsuario);
+                                }
+                            });
+                        }
+
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
         TextView nomUsuario = findViewById(R.id.nombreUsuarioText);
         nomUsuario.setText(getString(R.string.nombre)+" "+nombre);
 
@@ -118,14 +147,15 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         RecyclerView rv = findViewById(R.id.usuarioRecetas);
 
         //Obtenemos las recetas creadas
-        Data datos = new Data.Builder()
-                .putString("funcion", "obtenerRecetas")
+        Data datos1 = new Data.Builder()
+                .putString("funcion", "obtenerRecetasUsuario")
+                .putString("nombreUsuario", nombre)
                 .build();
 
-        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
-                .setInputData(datos)
+        OneTimeWorkRequest otwr1 = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                .setInputData(datos1)
                 .build();
-        WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr.getId())
+        WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr1.getId())
                 .observe(UsuarioPerfil.this, status -> {
                     if (status != null && status.getState().isFinished()) {
                         String result = status.getOutputData().getString("resultado");
@@ -134,17 +164,43 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                             recetasFoto = new ArrayList<>();
                             for (String receta : recetasNombre) {
                                 //Obtener las imágenes de las recetas
+                                Data datos2 = new Data.Builder()
+                                        .putString("funcion", "obtenerImagenReceta")
+                                        .putString("nombreReceta", receta)
+                                        .build();
+
+                                OneTimeWorkRequest otwr2 = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                                        .setInputData(datos2)
+                                        .build();
+                                WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr2.getId())
+                                        .observe(UsuarioPerfil.this, status2 -> {
+                                            if (status2 != null && status2.getState().isFinished()) {
+                                                String result2 = status2.getOutputData().getString("resultado");
+                                                if (result2 != null) {
+                                                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                                                    StorageReference pathReference = storageRef.child(result2);
+                                                    final long ONE_MEGABYTE = 1024 * 1024;
+                                                    pathReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                        @Override
+                                                        public void onSuccess(byte[] bytes) {
+                                                            recetasFoto.add(bytes);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                WorkManager.getInstance(getApplicationContext()).enqueue(otwr2);
+
+                                RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
+                                rv.setAdapter(eladaptador);
+
+                                GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
+                                rv.setLayoutManager(elLayoutRejillaIgual);
                             }
-
-                            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
-                            rv.setAdapter(eladaptador);
-
-                            GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
-                            rv.setLayoutManager(elLayoutRejillaIgual);
                         }
                     }
                 });
-        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr1);
 
         Intent iInfoReceta = new Intent(this, InfoReceta.class);
 
@@ -206,22 +262,32 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onDismiss(DialogInterface dialog) {
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Icono"};
-        String[] argumentos = new String[] {nombre};
-        Cursor cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
-        CursorWindow cw = new CursorWindow("test", 50000000);
-        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
-        ac.setWindow(cw);
-        while (ac.moveToNext()){
-            imagen = cu.getBlob(0);
-        }
-        cu.close();
-        bd.close();
-        if (imagen != null) {
-            iconoUsuario.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-        }
+        Data datos = new Data.Builder()
+                .putString("funcion", "obtenerImagenUsuario")
+                .putString("nombreUsuario", nombre)
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(UsuarioPerfil.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+                        if (result != null) {
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                            StorageReference pathReference = storageRef.child(result);
+                            pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(getApplicationContext()).load(uri).into(iconoUsuario);
+                                }
+                            });
+                        }
+
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
     }
 
     @Override

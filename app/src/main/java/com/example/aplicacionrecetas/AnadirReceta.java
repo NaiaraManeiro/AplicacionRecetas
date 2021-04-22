@@ -26,6 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -35,6 +36,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
@@ -91,9 +98,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 .build();
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
 
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-
         //Para añadir una foto de la receta
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
 
@@ -109,20 +113,35 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         });
 
         //Para que en el giro de pantalla no se pierda la imagen
-        bd = GestorDB.getWritableDatabase();
-        /*campos = new String[] {"Imagen"};
-        cu = bd.query("Receta", campos, "Nombre='NewReceta'", null,null,null,null);
-        CursorWindow cw = new CursorWindow("test", 50000000);
-        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
-        ac.setWindow(cw);
-        while (ac.moveToNext()){
-            imagen = cu.getBlob(0);
-        }
-        cu.close();
-        bd.close();
-        if (imagen != null) {
-            imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-        }*/
+
+        Data datos2 = new Data.Builder()
+                .putString("funcion", "obtenerImagenReceta")
+                .putString("nombreReceta", "NewReceta")
+                .build();
+
+        OneTimeWorkRequest otwr2 = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos2)
+                .build();
+        WorkManager.getInstance(AnadirReceta.this).getWorkInfoByIdLiveData(otwr2.getId())
+                .observe(AnadirReceta.this, status2 -> {
+                    if (status2 != null && status2.getState().isFinished()) {
+                        String result2 = status2.getOutputData().getString("resultado");
+                        if (result2 != null) {
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                            if (result2.equals("")) {
+                                result2 = "/Recetas/addfotoreceta.png";
+                            }
+                            StorageReference pathReference = storageRef.child(result2);
+                            pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(getApplicationContext()).load(uri).into(imagenNuevaReceta);
+                                }
+                            });
+                        }
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr2);
 
         //Para añadir un ingrediente
         Button anadirIngrediente = findViewById(R.id.botonAddIngrediente);
@@ -155,12 +174,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 } else if (pasos.equals("")) {
                     Toast.makeText(getApplicationContext(), getString(R.string.toastPasosReceta), Toast.LENGTH_SHORT).show();
                 } else {
-                    ImageView imagenReceta = findViewById(R.id.imagenNuevaReceta);
-                    Bitmap icon = ((BitmapDrawable)imagenReceta.getDrawable()).getBitmap();
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-                    byte[] data =  outputStream.toByteArray();
-
                     //Añadir a la base de datos la receta
                     Data datos = new Data.Builder()
                             .putString("funcion", "anadirReceta")
@@ -183,6 +196,29 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                                     } else {
                                         //Le añadimos la receta al usuario
                                         anadirRecetaUsuario(nombreReceta, nombreUsuario);
+
+                                        //Actualizamos el nombre de la imagen de la receta en firebase
+                                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                                        final byte[][] imagen = {null};
+                                        //--Obtenemos la foto con el nombre genérico
+                                        StorageReference islandRef = storageRef.child("/Recetas/NewReceta.png");
+                                        final long ONE_MEGABYTE = 1024 * 1024;
+                                        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                            @Override
+                                            public void onSuccess(byte[] bytes) {
+                                                imagen[0] = bytes;
+                                            }
+                                        });
+                                        //--Subimos la foto con el nuevo nombre
+                                        StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta+".png");
+                                        UploadTask uploadTask = spaceRef.putBytes(imagen[0]);
+                                        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            }
+                                        });
+                                        //--Eliminamos la foto con el nombre genérico
+                                        deleteImageFirebase();
 
                                         //Añadir una notificación
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -219,24 +255,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Data datos = new Data.Builder()
-                        .putString("funcion", "eliminarReceta")
-                        .build();
-
-                OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
-                        .setInputData(datos)
-                        .build();
-                WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
-
-                finish();
-                if (main) {
-                    iMain.putExtra("nombre", nombreUsuario);
-                    iMain.putExtra("inicio",true);
-                    startActivity(iMain);
-                } else {
-                    iPerfil.putExtra("nombre", nombreUsuario);
-                    startActivity(iPerfil);
-                }
+                eliminarDatosReceta();
             }
         });
     }
@@ -245,21 +264,31 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onDismiss(DialogInterface dialog) {
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Imagen"};
-        Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
-        CursorWindow cw = new CursorWindow("test", 50000000);
-        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
-        ac.setWindow(cw);
-        while (ac.moveToNext()){
-            imagen = cu.getBlob(0);
-        }
-        cu.close();
-        bd.close();
-        if (imagen != null) {
-            imagenNuevaReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-        }
+        Data datos = new Data.Builder()
+                .putString("funcion", "obtenerImagenReceta")
+                .putString("nombreReceta", "NewReceta")
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(AnadirReceta.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(AnadirReceta.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+                        if (result != null) {
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                            StorageReference pathReference = storageRef.child(result);
+                            pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(getApplicationContext()).load(uri).into(imagenNuevaReceta);
+                                }
+                            });
+                        }
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -279,26 +308,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            Data datos = new Data.Builder()
-                    .putString("funcion", "eliminarReceta")
-                    .build();
-
-            OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
-                    .setInputData(datos)
-                    .build();
-            WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
-
-            finish();
-            Intent iMain = new Intent(this, MainActivity.class);
-            Intent iPerfil = new Intent(this, UsuarioPerfil.class);
-            if (main) {
-                iMain.putExtra("usuario", nombreUsuario);
-                iMain.putExtra("inicio",true);
-                startActivity(iMain);
-            } else {
-                iPerfil.putExtra("nombre", nombreUsuario);
-                startActivity(iPerfil);
-            }
+            eliminarDatosReceta();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -320,5 +330,36 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         configuration.setLayoutDirection(nuevaloc);
         Context context = getBaseContext().createConfigurationContext(configuration);
         getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+    }
+
+    private void eliminarDatosReceta() {
+        Data datos = new Data.Builder()
+                .putString("funcion", "eliminarReceta")
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
+        deleteImageFirebase();
+
+        finish();
+        Intent iMain = new Intent(this, MainActivity.class);
+        Intent iPerfil = new Intent(this, UsuarioPerfil.class);
+        if (main) {
+            iMain.putExtra("nombre", nombreUsuario);
+            iMain.putExtra("inicio",true);
+            startActivity(iMain);
+        } else {
+            iPerfil.putExtra("nombre", nombreUsuario);
+            startActivity(iPerfil);
+        }
+    }
+
+    private void deleteImageFirebase() {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference pathReference = storageRef.child("/Recetas/NewReceta.png");
+        pathReference.delete();
     }
 }

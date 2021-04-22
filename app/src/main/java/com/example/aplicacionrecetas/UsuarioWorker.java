@@ -1,6 +1,9 @@
 package com.example.aplicacionrecetas;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
@@ -12,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -43,9 +47,11 @@ public class UsuarioWorker extends Worker {
 
             JSONObject parametrosJSON = new JSONObject();
             parametrosJSON.put("funcion", funcion);
+            parametrosJSON.put("nombreUsuario", getInputData().getString("nombreUsuario"));
             if (funcion.equals("anadirRecetaUsuario")) {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
-                parametrosJSON.put("nombreUsuario", getInputData().getString("nombreUsuario"));
+            } else if (funcion.equals("anadirImagenUsuario")) {
+                parametrosJSON.put("url", getInputData().getString("url"));
             }
 
             urlConnection.setRequestProperty("Content-Type","application/json");
@@ -60,7 +66,7 @@ public class UsuarioWorker extends Worker {
             e.printStackTrace();
         }
 
-        if (!funcion.equals("anadirRecetaUsuario")) {
+        if (!funcion.equals("anadirRecetaUsuario") && !funcion.equals("anadirImagenUsuario")) {
             int statusCode;
             try {
                 statusCode = urlConnection.getResponseCode();
@@ -79,8 +85,9 @@ public class UsuarioWorker extends Worker {
         }
 
         Data resultados = new Data.Builder()
-                .putString("resultado", result)
-                .build();
+                    .putString("resultado", result)
+                    .build();
+
         return Result.success(resultados);
     }
 }

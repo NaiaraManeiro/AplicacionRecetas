@@ -32,6 +32,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -151,23 +160,54 @@ public class DialogoGaleriaCamara extends DialogFragment {
         }
 
         if (icon != null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-            byte[] dataIcon = outputStream.toByteArray();
+            //Añadimos la url de la imagen a la base de datos
+            String url = "";
+            Data datos = null;
 
-            //Añadir a la base de datos
-            BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
-            SQLiteDatabase bd = GestorDB.getWritableDatabase();
-            ContentValues modificacion = new ContentValues();
             if (usuarioReceta.equals("receta")) {
-                modificacion.put("Imagen", dataIcon);
-                bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
+                url = "/Recetas/NewReceta.png";
+                datos = new Data.Builder()
+                        .putString("funcion", "anadirImagenReceta")
+                        .putString("url", url)
+                        .build();
             } else if (usuarioReceta.equals("usuario")) {
-                modificacion.put("Icono", dataIcon);
-                String[] argumentos = new String[]{usuarioNombre};
-                bd.update("Usuario", modificacion, "Nombre=?", argumentos);
+                url = "/Usuarios/"+usuarioNombre+".png";
+                datos = new Data.Builder()
+                        .putString("funcion", "anadirImagenUsuario")
+                        .putString("url", url)
+                        .putString("nombreUsuario", usuarioNombre)
+                        .build();
             }
-            bd.close();
+
+            OneTimeWorkRequest otwr = null;
+
+            if (usuarioReceta.equals("receta")) {
+                otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                        .setInputData(datos)
+                        .build();
+            } else if (usuarioReceta.equals("usuario")) {
+                otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                        .setInputData(datos)
+                        .build();
+            }
+
+            WorkManager.getInstance(getContext()).enqueue(otwr);
+
+            //Añadimos la imagen a Firebase
+
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference spaceRef = storageRef.child(url);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            icon.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imagen = baos.toByteArray();
+
+            UploadTask uploadTask = spaceRef.putBytes(imagen);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                }
+            });
         }
     }
 

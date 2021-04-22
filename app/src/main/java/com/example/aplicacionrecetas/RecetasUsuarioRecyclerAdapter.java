@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class RecetasUsuarioRecyclerAdapter extends RecyclerView.Adapter<RecetasUsuarioViewHolder> {
-    private String[] losnombres;
-    private ArrayList<byte[]> lasimagenes;
+    private final String[] losnombres;
+    private final ArrayList<byte[]> lasimagenes;
 
     public RecetasUsuarioRecyclerAdapter (String[] nombres, ArrayList<byte[]> imagenes) {
         losnombres = nombres;

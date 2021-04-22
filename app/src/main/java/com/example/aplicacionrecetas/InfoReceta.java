@@ -37,6 +37,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -92,12 +97,22 @@ public class InfoReceta extends AppCompatActivity {
                 .observe(InfoReceta.this, status -> {
                     if (status != null && status.getState().isFinished()) {
                         String result = status.getOutputData().getString("resultado");
-
+                        //Mirar el json que devuelve y dar los valores
                         TextView nomReceta = findViewById(R.id.nombreReceta);
                         nomReceta.setText(getString(R.string.nombre)+" "+recetaNombre);
                         TextView pasosReceta = findViewById(R.id.pasosSeguir);
                         pasosReceta.setText(pasos);
                         listaIngredientes = new ArrayList<>(Arrays.asList(ingredientes.split(",")));
+                        //Obtenemos la imagen de Firebase
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                        StorageReference pathReference = storageRef.child(result);
+                        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                ImageView imagenReceta = findViewById(R.id.imagenReceta);
+                                Glide.with(getApplicationContext()).load(uri).into(imagenReceta);
+                            }
+                        });
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);

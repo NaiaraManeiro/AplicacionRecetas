@@ -50,7 +50,7 @@ public class RecetasWorker extends Worker {
                 parametrosJSON.put("ingrediente", getInputData().getString("ingrediente"));
             } else if (funcion.equals("actualizarIngredientes")) {
                 parametrosJSON.put("nuevosIngredientes", getInputData().getString("nuevosIngredientes"));
-            } else if (funcion.equals("datosReceta") || funcion.equals("existeReceta")) {
+            } else if (funcion.equals("datosReceta") || funcion.equals("existeReceta") || funcion.equals("obtenerImagenReceta")) {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
             }
 
