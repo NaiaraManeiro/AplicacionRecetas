@@ -264,34 +264,16 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void anadirRecetaUsuario(String nombreReceta, String nombreUsuario) {
-        String recetas = "";
-        //Vemos y cogemos las recetas que tiene
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"RecetasCreadas"};
-        String[] argumentos = new String[] {nombreUsuario};
-        Cursor cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
-        while (cu.moveToNext()){
-            recetas = cu.getString(0);
-        }
-        cu.close();
-        bd.close();
+        Data datos = new Data.Builder()
+                .putString("funcion", "anadirRecetaUsuario")
+                .putString("nombreReceta", nombreReceta)
+                .putString("nombreUsuario", nombreUsuario)
+                .build();
 
-        String recetasUsuario = "";
-
-        if (recetas != null) {
-            recetasUsuario = recetas+","+nombreReceta;
-        } else {
-            recetasUsuario = nombreReceta;
-        }
-
-        //Le añadimos la nueva receta
-        bd = GestorDB.getWritableDatabase();
-        ContentValues modificacion = new ContentValues();
-        modificacion.put("RecetasCreadas", recetasUsuario);
-        argumentos = new String[] {nombreUsuario};
-        bd.update("Usuario", modificacion, "Nombre=?", argumentos);
-        bd.close();
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
     }
 
     @Override

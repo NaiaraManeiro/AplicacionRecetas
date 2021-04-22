@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener {
@@ -114,43 +118,33 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         RecyclerView rv = findViewById(R.id.usuarioRecetas);
 
         //Obtenemos las recetas creadas
-        GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        bd = GestorDB.getWritableDatabase();
-        campos = new String[] {"RecetasCreadas"};
-        argumentos = new String[] {nombre};
-        cu = bd.query("Usuario", campos,"Nombre=?", argumentos,null,null,null);
-        while (cu.moveToNext()){
-            recetasUsuario = cu.getString(0);
-        }
-        cu.close();
-        bd.close();
+        Data datos = new Data.Builder()
+                .putString("funcion", "obtenerRecetas")
+                .build();
 
-        if (recetasUsuario != null) {
-            recetasNombre = recetasUsuario.split(",");
-            recetasFoto = new ArrayList<>();
-            GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-            for (String receta : recetasNombre) {
-                bd = GestorDB.getWritableDatabase();
-                campos = new String[] {"Imagen"};
-                argumentos = new String[] {receta};
-                cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
-                cw = new CursorWindow("test", 50000000);
-                ac = (AbstractWindowedCursor) cu;
-                ac.setWindow(cw);
-                while (ac.moveToNext()){
-                    byte[] imagen = cu.getBlob(0);
-                    recetasFoto.add(imagen);
-                }
-            }
-            cu.close();
-            bd.close();
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(UsuarioPerfil.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+                        if (result != null) {
+                            recetasNombre = result.split(",");
+                            recetasFoto = new ArrayList<>();
+                            for (String receta : recetasNombre) {
+                                //Obtener las imágenes de las recetas
+                            }
 
-            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
-            rv.setAdapter(eladaptador);
+                            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
+                            rv.setAdapter(eladaptador);
 
-            GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
-            rv.setLayoutManager(elLayoutRejillaIgual);
-        }
+                            GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
+                            rv.setLayoutManager(elLayoutRejillaIgual);
+                        }
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
 
         Intent iInfoReceta = new Intent(this, InfoReceta.class);
 
