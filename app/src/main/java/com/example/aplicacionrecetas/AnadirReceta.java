@@ -45,12 +45,10 @@ import java.util.Locale;
 
 public class AnadirReceta extends AppCompatActivity implements DialogInterface.OnDismissListener {
 
-    private String in;
     private boolean main = false;
     private String nombreUsuario;
     private byte[] imagen;
     private ImageView imagenNuevaReceta;
-    private String recetaExiste;
     private static final String STATE_NOMBRE = "nombreReceta";
     private String nombreReceta;
     private static final String STATE_PASOS = "pasosReceta";
@@ -95,21 +93,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
 
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        /*String[] campos = new String[] {"Nombre"};
-        Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'", null,null,null,null);
-        while (cu.moveToNext()){
-            recetaExiste = cu.getString(0);
-        }
-        cu.close();
-        bd.close();
-
-        if (recetaExiste == null) {
-            bd = GestorDB.getWritableDatabase();
-            ContentValues nuevo = new ContentValues();
-            nuevo.put("Nombre", "NewReceta");
-            bd.insert("Receta", null, nuevo);
-            bd.close();
-        }*/
 
         //Para añadir una foto de la receta
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);
@@ -126,8 +109,8 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         });
 
         //Para que en el giro de pantalla no se pierda la imagen
-        /*bd = GestorDB.getWritableDatabase();
-        campos = new String[] {"Imagen"};
+        bd = GestorDB.getWritableDatabase();
+        /*campos = new String[] {"Imagen"};
         cu = bd.query("Receta", campos, "Nombre='NewReceta'", null,null,null,null);
         CursorWindow cw = new CursorWindow("test", 50000000);
         AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
@@ -167,31 +150,10 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 EditText pasosCaja = findViewById(R.id.pasosSeguir);
                 String pasos = pasosCaja.getText().toString();
 
-                //Para mirar si ya existe el nombre de la receta
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                String[] campos = new String[] {"Nombre"};
-                String[] argumentos = new String[] {nombreReceta};
-                Cursor cu = bd.query("Receta", campos,"Nombre=?",argumentos,null,null,null);
-                int count = cu.getCount();
-
-                //Para mirar si hay ingredientes añadidos
-                bd = GestorDB.getWritableDatabase();
-                campos = new String[] {"Nombre", "Ingredientes"};
-                cu = bd.query("Receta",campos,"Nombre='NewReceta'",null,null,null,null);
-                while (cu.moveToNext()) {
-                    in = cu.getString(1);
-                }
-                cu.close();
-                bd.close();
                 if (nombreReceta.equals("")) {
                     Toast.makeText(getApplicationContext(), getString(R.string.toastNombreReceta), Toast.LENGTH_SHORT).show();
-                } else if (count > 0) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toastNameExist), Toast.LENGTH_SHORT).show();
-                    cajaNombreReceta.setText("");
                 } else if (pasos.equals("")) {
                     Toast.makeText(getApplicationContext(), getString(R.string.toastPasosReceta), Toast.LENGTH_SHORT).show();
-                } else if (in == null) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toastIngredientesReceta), Toast.LENGTH_SHORT).show();
                 } else {
                     ImageView imagenReceta = findViewById(R.id.imagenNuevaReceta);
                     Bitmap icon = ((BitmapDrawable)imagenReceta.getDrawable()).getBitmap();
@@ -203,49 +165,52 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                     Data datos = new Data.Builder()
                             .putString("funcion", "anadirReceta")
                             .putString("nombreReceta", nombreReceta)
-                            .putByteArray("Imagen", data)
                             .putString("PasosSeguir", pasos)
                             .build();
 
                     OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
                             .setInputData(datos)
                             .build();
+                    WorkManager.getInstance(AnadirReceta.this).getWorkInfoByIdLiveData(otwr.getId())
+                            .observe(AnadirReceta.this, status -> {
+                                if (status != null && status.getState().isFinished()) {
+                                    String result = status.getOutputData().getString("resultado");
+                                    if (result.equals("ErrorNombre")) {
+                                        Toast.makeText(getApplicationContext(), getString(R.string.toastNameExist), Toast.LENGTH_SHORT).show();
+                                        cajaNombreReceta.setText("");
+                                    } else if (result.equals("ErrorIngredientes")) {
+                                        Toast.makeText(getApplicationContext(), getString(R.string.toastIngredientesReceta), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        //Le añadimos la receta al usuario
+                                        anadirRecetaUsuario(nombreReceta, nombreUsuario);
+
+                                        //Añadir una notificación
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
+                                            elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
+                                                    .setSmallIcon(R.drawable.suma)
+                                                    .setContentTitle(getText(R.string.notiRecetaAnadida))
+                                                    .setContentText(getString(R.string.notiLaReceta)+" '"+nombreReceta+"' "+getString(R.string.notiHaSidoAñadida))
+                                                    .setVibrate(new long[]{0, 1000, 500, 1000})
+                                                    .setAutoCancel(true);
+                                            elCanal.enableLights(true);
+                                            elManager.createNotificationChannel(elCanal);
+                                        }
+                                        elManager.notify(1, elBuilder.build());
+
+                                        finish();
+
+                                        if (main) {
+                                            iMain.putExtra("nombre", nombreUsuario);
+                                            startActivity(iMain);
+                                        } else {
+                                            iPerfil.putExtra("nombre", nombreUsuario);
+                                            startActivity(iPerfil);
+                                        }
+                                    }
+                                }
+                            });
                     WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
-
-                    /*bd = GestorDB.getWritableDatabase();
-                    ContentValues modificacion = new ContentValues();
-                    modificacion.put("Nombre", nombreReceta);
-                    modificacion.put("Imagen", data);
-                    modificacion.put("PasosSeguir", pasos);
-                    bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-                    bd.close();*/
-
-                    //Le añadimos la receta al usuario
-                    anadirRecetaUsuario(nombreReceta, nombreUsuario);
-
-                    //Añadir una notificación
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
-                        elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
-                                .setSmallIcon(R.drawable.suma)
-                                .setContentTitle(getText(R.string.notiRecetaAnadida))
-                                .setContentText(getString(R.string.notiLaReceta)+" '"+nombreReceta+"' "+getString(R.string.notiHaSidoAñadida))
-                                .setVibrate(new long[]{0, 1000, 500, 1000})
-                                .setAutoCancel(true);
-                        elCanal.enableLights(true);
-                        elManager.createNotificationChannel(elCanal);
-                    }
-                    elManager.notify(1, elBuilder.build());
-
-                    finish();
-
-                    if (main) {
-                        iMain.putExtra("nombre", nombreUsuario);
-                        startActivity(iMain);
-                    } else {
-                        iPerfil.putExtra("nombre", nombreUsuario);
-                        startActivity(iPerfil);
-                    }
                 }
             }
         });
@@ -256,7 +221,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
             public void onClick(View v) {
                 Data datos = new Data.Builder()
                         .putString("funcion", "eliminarReceta")
-                        .putString("nombreReceta", "NewReceta")
                         .build();
 
                 OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
@@ -264,9 +228,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                         .build();
                 WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
 
-                /*SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                bd.delete("Receta", "Nombre='NewReceta'", null);
-                bd.close();*/
                 finish();
                 if (main) {
                     iMain.putExtra("nombre", nombreUsuario);
@@ -336,13 +297,8 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            /*BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-            SQLiteDatabase bd = GestorDB.getWritableDatabase();
-            bd.delete("Receta", "nombre='NewReceta'", null);
-            bd.close(); */
             Data datos = new Data.Builder()
                     .putString("funcion", "eliminarReceta")
-                    .putString("nombreReceta", "NewReceta")
                     .build();
 
             OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)

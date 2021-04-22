@@ -22,14 +22,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
 public class DialogoAddIngrediente extends DialogFragment {
-    private ArrayList<String> listaIngredientes = new ArrayList<>();
-    private String ingredientes;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @NonNull
@@ -51,7 +52,6 @@ public class DialogoAddIngrediente extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View vista = inflater.inflate(R.layout.dialog_add_ingrediente, null);
 
-        BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
         //Para añadir el ingrediente
         Button anadir = vista.findViewById(R.id.anadirIngrediente);
         anadir.setOnClickListener(new View.OnClickListener() {
@@ -60,32 +60,15 @@ public class DialogoAddIngrediente extends DialogFragment {
                 EditText cajaIngrediente = vista.findViewById(R.id.nombreIngrediente);
                 String ingrediente = cajaIngrediente.getText().toString();
 
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                String[] campos = new String[] {"Ingredientes"};
-                Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'",null,null,null,null);
-                while (cu.moveToNext()){
-                    String ingredienteS = cu.getString(0);
-                    if (cu.getCount() > 0 && ingredienteS != null) {
-                        //Añadimos el nuevo ingrediente a los existentes en caso de que haya
-                        ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(ingredienteS.split(",")));
-                        listaIngredientes = new ArrayList<>();
-                        listaIngredientes.addAll(arrayIngredientes);
-                    }
-                    listaIngredientes.add(ingrediente);
-                }
-                bd.close();
+                Data datos = new Data.Builder()
+                        .putString("funcion", "anadirIngrediente")
+                        .putString("ingrediente", ingrediente)
+                        .build();
 
-                String commaseparatedlist = listaIngredientes.toString();
-                ingredientes = commaseparatedlist.replace("[", "")
-                        .replace("]", "")
-                        .replace(" ", "");
-
-
-                bd = GestorDB.getWritableDatabase();
-                ContentValues modificacion = new ContentValues();
-                modificacion.put("Ingredientes", ingredientes);
-                bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-                bd.close();
+                OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                        .setInputData(datos)
+                        .build();
+                WorkManager.getInstance(getContext()).enqueue(otwr);
 
                 Toast.makeText(getActivity().getApplicationContext(),getString(R.string.ingredienteAnadido), Toast.LENGTH_SHORT).show();
                 cajaIngrediente.setText("");

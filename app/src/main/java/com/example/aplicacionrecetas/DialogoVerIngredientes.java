@@ -17,6 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +56,27 @@ public class DialogoVerIngredientes extends DialogFragment {
         if(!infoReceta) {
             builder.setTitle(getString(R.string.pulsaBorrar));
 
-            BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
+            Data datos = new Data.Builder()
+                    .putString("funcion", "verIngredientes")
+                    .build();
+
+            OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                    .setInputData(datos)
+                    .build();
+            WorkManager.getInstance(getActivity()).getWorkInfoByIdLiveData(otwr.getId())
+                    .observe(getActivity(), status -> {
+                        if (status != null && status.getState().isFinished()) {
+                            String result = status.getOutputData().getString("resultado");
+                            if (!result.equals("")) {
+                                ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(result.split(",")));
+                                ingredientes = arrayIngredientes.toArray(new CharSequence[arrayIngredientes.size()]);
+                            }
+                        }
+
+                    });
+            WorkManager.getInstance(getContext()).enqueue(otwr);
+
+            /*BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
             SQLiteDatabase bd = GestorDB.getWritableDatabase();
             String[] campos = new String[] {"Ingredientes"};
             Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'",null,null,null,null);
@@ -65,7 +88,7 @@ public class DialogoVerIngredientes extends DialogFragment {
                     ingredientes = arrayIngredientes.toArray(new CharSequence[arrayIngredientes.size()]);
                 }
             }
-            bd.close();
+            bd.close();*/
         } else {
             ingredientes = listaIngredientes.toArray(new CharSequence[listaIngredientes.size()]);
         }
@@ -88,12 +111,22 @@ public class DialogoVerIngredientes extends DialogFragment {
                             .replace("]", "")
                             .replace(" ", "");
 
-                    BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
+                    Data datos = new Data.Builder()
+                            .putString("funcion", "actualizarIngredientes")
+                            .putString("nuevosIngredientes", ingredientesNuevos)
+                            .build();
+
+                    OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                            .setInputData(datos)
+                            .build();
+                    WorkManager.getInstance(getContext()).enqueue(otwr);
+
+                    /*BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
                     SQLiteDatabase bd = GestorDB.getWritableDatabase();
                     ContentValues modificacion = new ContentValues();
                     modificacion.put("Ingredientes", ingredientesNuevos);
                     bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-                    bd.close();
+                    bd.close();*/
                 }
             }
         });

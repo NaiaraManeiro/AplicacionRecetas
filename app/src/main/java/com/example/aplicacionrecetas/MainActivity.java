@@ -4,7 +4,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -28,15 +33,17 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private boolean iniciarSesion = false;
     private BuscadorListAdapter adaptador;
-    private ArrayList<String> listaRecetas = new ArrayList<>();
+    private final ArrayList<String> listaRecetas = new ArrayList<>();
     private SearchView buscador;
     private String nombreUsuario;
+    private String existeNombreReceta = null;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -59,9 +66,6 @@ public class MainActivity extends AppCompatActivity {
             iniciarSesion = extras.getBoolean("inicio");
             nombreUsuario = extras.getString("nombre");
         }
-
-        //this.deleteDatabase("RecetasBD");
-        //anadirImagenes();
 
         //Creamos el carrousel de imágenes
         ImageView rocketImage = findViewById(R.id.recetasCarrousel);
@@ -195,39 +199,47 @@ public class MainActivity extends AppCompatActivity {
                 listaBuscador.setVisibility(View.INVISIBLE);
             }
         });
-
-
     }
 
     private void obtenerRecetas(){
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Nombre"};
-        Cursor cu = bd.query("Receta",campos,null,null,null,null,"Nombre ASC");
-        while (cu.moveToNext()){
-            listaRecetas.add(cu.getString(0));
-        }
-        cu.close();
-        bd.close();
+        Data datos = new Data.Builder()
+                .putString("funcion", "obtenerRecetas")
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(MainActivity.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(MainActivity.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+                        String[] recetas = result.split(",");
+                        listaRecetas.addAll(Arrays.asList(recetas));
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
     }
 
     private String existeReceta(String nombre) {
-        String receta = null;
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Nombre"};
-        Cursor cu = bd.query("Receta", campos,null, null,null,null,null);
-        while (cu.moveToNext()) {
-            String nombreAct = cu.getString(0);
-            if (nombre.toLowerCase().equals(nombreAct.toLowerCase())) {
-                cu.close();
-                bd.close();
-                return nombreAct;
-            }
-        }
-        cu.close();
-        bd.close();
-        return receta;
+        Data datos = new Data.Builder()
+                .putString("funcion", "existeReceta")
+                .putString("nombreReceta", nombre)
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(MainActivity.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(MainActivity.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+                        if (nombre.toLowerCase().equals(result.toLowerCase())) {
+                            existeNombreReceta = result;
+                        }
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+        return existeNombreReceta;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -239,41 +251,5 @@ public class MainActivity extends AppCompatActivity {
         configuration.setLayoutDirection(nuevaloc);
         Context context = getBaseContext().createConfigurationContext(configuration);
         getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
-    }
-
-    //Añadir imagenes a las recetas cuando se vuelve a crear la base de datos
-    private void anadirImagenes() {
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.pasta);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        icon.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-        byte[] data =  outputStream.toByteArray();
-
-        ContentValues modificacion = new ContentValues();
-        modificacion.put("Imagen", data);
-        bd.update("Receta", modificacion, "Nombre='Pasta'", null);
-
-
-        Bitmap icon2 = BitmapFactory.decodeResource(getResources(), R.drawable.pollo);
-        ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
-        icon2.compress(Bitmap.CompressFormat.PNG, 0, outputStream2);
-        byte[] data2 =  outputStream2.toByteArray();
-
-        ContentValues modificacion2 = new ContentValues();
-        modificacion2.put("Imagen", data2);
-        bd.update("Receta", modificacion2, "Nombre='Pollo'", null);
-
-        Bitmap icon3 = BitmapFactory.decodeResource(getResources(), R.drawable.hamburguesa);
-        ByteArrayOutputStream outputStream3 = new ByteArrayOutputStream();
-        icon3.compress(Bitmap.CompressFormat.PNG, 0, outputStream3);
-        byte[] data3 =  outputStream3.toByteArray();
-
-        ContentValues modificacion3 = new ContentValues();
-        modificacion3.put("Imagen", data3);
-        bd.update("Receta", modificacion3, "Nombre='Hamburguesa'", null);
-
-        bd.close();
     }
 }

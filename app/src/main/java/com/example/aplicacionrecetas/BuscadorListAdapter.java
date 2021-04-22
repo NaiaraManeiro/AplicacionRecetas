@@ -15,8 +15,8 @@ public class BuscadorListAdapter extends BaseAdapter {
 
     Context mContext;
     LayoutInflater inflater;
-    private List<String> listaRecetas;
-    private ArrayList<String> arraylist;
+    private final List<String> listaRecetas;
+    private final ArrayList<String> arraylist;
 
     public BuscadorListAdapter(Context context, List<String> ingredientesLista) {
         mContext = context;

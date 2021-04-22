@@ -71,7 +71,7 @@ public class RegistroInicioWorker extends Worker {
             if (statusCode == 200) {
                 BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                String line;
+                String line = "";
                 while ((line = bufferedReader.readLine()) != null) {
                     result += (line);
                 }

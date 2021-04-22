@@ -7,6 +7,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.app.Activity;
 import android.app.NotificationChannel;
@@ -32,6 +35,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -48,6 +52,7 @@ import java.util.Locale;
 public class InfoReceta extends AppCompatActivity {
 
     private String recetaNombre;
+    private ArrayList<String> listaIngredientes;
     private byte[] imagen;
     private String ingredientes;
     private String pasos;
@@ -75,7 +80,29 @@ public class InfoReceta extends AppCompatActivity {
         }
 
         //Obtenemos todos los datos de la receta a mostrar
-        BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
+        Data datos = new Data.Builder()
+                .putString("funcion", "datosReceta")
+                .putString("nombreReceta", recetaNombre)
+                .build();
+
+        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                .setInputData(datos)
+                .build();
+        WorkManager.getInstance(InfoReceta.this).getWorkInfoByIdLiveData(otwr.getId())
+                .observe(InfoReceta.this, status -> {
+                    if (status != null && status.getState().isFinished()) {
+                        String result = status.getOutputData().getString("resultado");
+
+                        TextView nomReceta = findViewById(R.id.nombreReceta);
+                        nomReceta.setText(getString(R.string.nombre)+" "+recetaNombre);
+                        TextView pasosReceta = findViewById(R.id.pasosSeguir);
+                        pasosReceta.setText(pasos);
+                        listaIngredientes = new ArrayList<>(Arrays.asList(ingredientes.split(",")));
+                    }
+                });
+        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
+        /*BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Imagen", "Ingredientes", "PasosSeguir"};
         String[] argumentos = new String[] {recetaNombre};
@@ -92,13 +119,8 @@ public class InfoReceta extends AppCompatActivity {
         bd.close();
 
         ImageView imagenReceta = findViewById(R.id.imagenReceta);
-        imagenReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));
-        TextView nomReceta = findViewById(R.id.nombreReceta);
-        nomReceta.setText(getString(R.string.nombre)+" "+recetaNombre);
-        TextView pasosReceta = findViewById(R.id.pasosSeguir);
-        pasosReceta.setText(pasos);
+        imagenReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));*/
 
-        ArrayList<String> listaIngredientes = new ArrayList<>(Arrays.asList(ingredientes.split(",")));
         Button verIngredientes = findViewById(R.id.botonVerIngredientes);
         verIngredientes.setOnClickListener(new View.OnClickListener() {
             @Override

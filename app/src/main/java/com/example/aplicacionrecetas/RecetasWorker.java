@@ -20,6 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class RecetasWorker extends Worker {
+
+    private String result = "";
+
     public RecetasWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
@@ -27,7 +30,7 @@ public class RecetasWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        String direccion = "http://ec2-54-167-31-169.compute-1.amazonaws.com/nmaneiro001/WEB/inicioRegistro.php";
+        String direccion = "http://ec2-54-167-31-169.compute-1.amazonaws.com/nmaneiro001/WEB/recetas.php";
         HttpURLConnection urlConnection = null;
         String funcion = getInputData().getString("funcion");
         try {
@@ -42,9 +45,12 @@ public class RecetasWorker extends Worker {
             parametrosJSON.put("funcion", funcion);
             if (funcion.equals("anadirReceta")) {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
-                parametrosJSON.put("imagen", getInputData().getString("Imagen"));
                 parametrosJSON.put("pasos", getInputData().getString("PasosSeguir"));
-            } else if (funcion.equals("eliminarReceta")) {
+            } else if (funcion.equals("anadirIngrediente")) {
+                parametrosJSON.put("ingrediente", getInputData().getString("ingrediente"));
+            } else if (funcion.equals("actualizarIngredientes")) {
+                parametrosJSON.put("nuevosIngredientes", getInputData().getString("nuevosIngredientes"));
+            } else if (funcion.equals("datosReceta") || funcion.equals("existeReceta")) {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
             }
 
@@ -60,28 +66,25 @@ public class RecetasWorker extends Worker {
             e.printStackTrace();
         }
 
-        /*if (registroInicio.equals("Inicio")) {
-            int statusCode;
-            try {
-                statusCode = urlConnection.getResponseCode();
-                if (statusCode == 200) {
-                    BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        result += (line + ",");
-                    }
-                    inputStream.close();
+        int statusCode;
+        try {
+            statusCode = urlConnection.getResponseCode();
+            if (statusCode == 200) {
+                BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += (line);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                inputStream.close();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         Data resultados = new Data.Builder()
                 .putString("resultado", result)
                 .build();
-        return Result.success(resultados);*/
-        return null;
+        return Result.success(resultados);
     }
 }

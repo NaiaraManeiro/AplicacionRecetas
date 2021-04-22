@@ -63,6 +63,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
             nombre = extras.getString("nombre");
         }
 
+        //Cargamos la imagen del usuario
         BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
         SQLiteDatabase bd = GestorDB.getWritableDatabase();
         String[] campos = new String[] {"Icono"};
