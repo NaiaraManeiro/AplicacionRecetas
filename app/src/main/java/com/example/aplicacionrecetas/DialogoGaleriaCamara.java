@@ -194,7 +194,6 @@ public class DialogoGaleriaCamara extends DialogFragment {
             WorkManager.getInstance(getContext()).enqueue(otwr);
 
             //Añadimos la imagen a Firebase
-
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference spaceRef = storageRef.child(url);
 

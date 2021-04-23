@@ -38,7 +38,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,7 +56,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
 
     private boolean main = false;
     private String nombreUsuario;
-    private byte[] imagen;
     private ImageView imagenNuevaReceta;
     private static final String STATE_NOMBRE = "nombreReceta";
     private String nombreReceta;
@@ -113,7 +114,6 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
         });
 
         //Para que en el giro de pantalla no se pierda la imagen
-
         Data datos2 = new Data.Builder()
                 .putString("funcion", "obtenerImagenReceta")
                 .putString("nombreReceta", "NewReceta")
@@ -179,6 +179,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                             .putString("funcion", "anadirReceta")
                             .putString("nombreReceta", nombreReceta)
                             .putString("PasosSeguir", pasos)
+                            .putString("Imagen", "/Recetas/"+nombreReceta+".png")
                             .build();
 
                     OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
@@ -194,27 +195,43 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                                     } else if (result.equals("ErrorIngredientes")) {
                                         Toast.makeText(getApplicationContext(), getString(R.string.toastIngredientesReceta), Toast.LENGTH_SHORT).show();
                                     } else {
+
                                         //Le añadimos la receta al usuario
                                         anadirRecetaUsuario(nombreReceta, nombreUsuario);
 
-                                        //Actualizamos el nombre de la imagen de la receta en firebase
+                                        //Actualización del nombre de la imagen de la receta en firebase
                                         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                                        final byte[][] imagen = {null};
                                         //--Obtenemos la foto con el nombre genérico
                                         StorageReference islandRef = storageRef.child("/Recetas/NewReceta.png");
-                                        final long ONE_MEGABYTE = 1024 * 1024;
-                                        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                        islandRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                             @Override
                                             public void onSuccess(byte[] bytes) {
-                                                imagen[0] = bytes;
+                                                //--Subimos la foto con el nuevo nombre
+                                                StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta+".png");
+                                                UploadTask uploadTask = spaceRef.putBytes(bytes);
+                                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                    }
+                                                });
                                             }
-                                        });
-                                        //--Subimos la foto con el nuevo nombre
-                                        StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta+".png");
-                                        UploadTask uploadTask = spaceRef.putBytes(imagen[0]);
-                                        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        }).addOnFailureListener(new OnFailureListener() {
                                             @Override
-                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            public void onFailure(@NonNull Exception exception) {
+                                                StorageReference islandRef = storageRef.child("/Recetas/addfotoreceta.png");
+                                                islandRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                    @Override
+                                                    public void onSuccess(byte[] bytes) {
+                                                        //--Subimos la foto con el nuevo nombre
+                                                        StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta+".png");
+                                                        UploadTask uploadTask = spaceRef.putBytes(bytes);
+                                                        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                            }
+                                                        });
+                                                    }
+                                                });
                                             }
                                         });
                                         //--Eliminamos la foto con el nombre genérico

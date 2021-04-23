@@ -19,6 +19,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import java.util.Locale;
 
@@ -56,15 +59,21 @@ public class DialogoEliminar extends DialogFragment {
 
         ImageView si = vista.findViewById(R.id.imageSi);
         Intent iMain = new Intent(getActivity(), MainActivity.class);
-        BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
+
         //Eliminamos el usuario de la base de datos
         si.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                String[] argumentos = new String[]{nombreUsuario};
-                bd.delete("Usuario", "Nombre=?", argumentos);
-                bd.close();
+                Data datos = new Data.Builder()
+                        .putString("funcion", "eliminarUsuario")
+                        .putString("nombreUsuario", nombreUsuario)
+                        .build();
+
+                OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                        .setInputData(datos)
+                        .build();
+                WorkManager.getInstance(getContext()).enqueue(otwr);
+
                 dismiss();
                 startActivity(iMain);
             }

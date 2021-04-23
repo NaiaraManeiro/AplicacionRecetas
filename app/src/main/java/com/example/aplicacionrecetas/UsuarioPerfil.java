@@ -190,13 +190,13 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                                             }
                                         });
                                 WorkManager.getInstance(getApplicationContext()).enqueue(otwr2);
-
-                                RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
-                                rv.setAdapter(eladaptador);
-
-                                GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
-                                rv.setLayoutManager(elLayoutRejillaIgual);
                             }
+
+                            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
+                            rv.setAdapter(eladaptador);
+
+                            GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
+                            rv.setLayoutManager(elLayoutRejillaIgual);
                         }
                     }
                 });

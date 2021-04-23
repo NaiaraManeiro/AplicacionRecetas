@@ -66,7 +66,7 @@ public class UsuarioWorker extends Worker {
             e.printStackTrace();
         }
 
-        if (!funcion.equals("anadirRecetaUsuario") && !funcion.equals("anadirImagenUsuario")) {
+        if (!funcion.equals("anadirImagenUsuario")) {
             int statusCode;
             try {
                 statusCode = urlConnection.getResponseCode();

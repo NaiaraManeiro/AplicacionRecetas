@@ -46,12 +46,15 @@ public class RecetasWorker extends Worker {
             if (funcion.equals("anadirReceta")) {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
                 parametrosJSON.put("pasos", getInputData().getString("PasosSeguir"));
+                parametrosJSON.put("imagen", getInputData().getString("Imagen"));
             } else if (funcion.equals("anadirIngrediente")) {
                 parametrosJSON.put("ingrediente", getInputData().getString("ingrediente"));
             } else if (funcion.equals("actualizarIngredientes")) {
                 parametrosJSON.put("nuevosIngredientes", getInputData().getString("nuevosIngredientes"));
             } else if (funcion.equals("datosReceta") || funcion.equals("existeReceta") || funcion.equals("obtenerImagenReceta")) {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
+            } else if (funcion.equals("anadirImagenReceta")) {
+                parametrosJSON.put("url", getInputData().getString("url"));
             }
 
             urlConnection.setRequestProperty("Content-Type","application/json");
