@@ -42,6 +42,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,7 +62,7 @@ public class InfoReceta extends AppCompatActivity {
 
     private String recetaNombre;
     private ArrayList<String> listaIngredientes;
-    private byte[] imagen;
+    private String imagen;
     private String ingredientes;
     private String pasos;
     private static final int COD_NUEVO_FICHERO = 40;
@@ -97,7 +101,14 @@ public class InfoReceta extends AppCompatActivity {
                 .observe(InfoReceta.this, status -> {
                     if (status != null && status.getState().isFinished()) {
                         String result = status.getOutputData().getString("resultado");
-                        //Mirar el json que devuelve y dar los valores
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            ingredientes = jsonObject.get("ingredientes").toString();
+                            pasos = jsonObject.get("pasos").toString();
+                            imagen = jsonObject.get("imagen").toString();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         TextView nomReceta = findViewById(R.id.nombreReceta);
                         nomReceta.setText(getString(R.string.nombre)+" "+recetaNombre);
                         TextView pasosReceta = findViewById(R.id.pasosSeguir);
@@ -105,7 +116,7 @@ public class InfoReceta extends AppCompatActivity {
                         listaIngredientes = new ArrayList<>(Arrays.asList(ingredientes.split(",")));
                         //Obtenemos la imagen de Firebase
                         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                        StorageReference pathReference = storageRef.child(result);
+                        StorageReference pathReference = storageRef.child(imagen);
                         pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
@@ -116,25 +127,6 @@ public class InfoReceta extends AppCompatActivity {
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
-
-        /*BaseDatos GestorDB = new BaseDatos (this, "RecetasBD", null, 1);
-        SQLiteDatabase bd = GestorDB.getWritableDatabase();
-        String[] campos = new String[] {"Imagen", "Ingredientes", "PasosSeguir"};
-        String[] argumentos = new String[] {recetaNombre};
-        Cursor cu = bd.query("Receta", campos,"Nombre=?", argumentos,null,null,null);
-        CursorWindow cw = new CursorWindow("test", 5000000);
-        AbstractWindowedCursor ac = (AbstractWindowedCursor) cu;
-        ac.setWindow(cw);
-        while (ac.moveToNext()){
-            imagen = cu.getBlob(0);
-            ingredientes = cu.getString(1);
-            pasos = cu.getString(2);
-        }
-        cu.close();
-        bd.close();
-
-        ImageView imagenReceta = findViewById(R.id.imagenReceta);
-        imagenReceta.setImageBitmap(BitmapFactory.decodeByteArray(imagen, 0, imagen.length));*/
 
         Button verIngredientes = findViewById(R.id.botonVerIngredientes);
         verIngredientes.setOnClickListener(new View.OnClickListener() {

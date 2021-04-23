@@ -76,19 +76,6 @@ public class DialogoVerIngredientes extends DialogFragment {
                     });
             WorkManager.getInstance(getContext()).enqueue(otwr);
 
-            /*BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
-            SQLiteDatabase bd = GestorDB.getWritableDatabase();
-            String[] campos = new String[] {"Ingredientes"};
-            Cursor cu = bd.query("Receta", campos,"Nombre='NewReceta'",null,null,null,null);
-
-            while (cu.moveToNext()) {
-                String ingrediente = cu.getString(0);
-                if (ingrediente != null) {
-                    ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(ingrediente.split(",")));
-                    ingredientes = arrayIngredientes.toArray(new CharSequence[arrayIngredientes.size()]);
-                }
-            }
-            bd.close();*/
         } else {
             ingredientes = listaIngredientes.toArray(new CharSequence[listaIngredientes.size()]);
         }

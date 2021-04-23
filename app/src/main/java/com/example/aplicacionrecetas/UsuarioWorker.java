@@ -7,8 +7,14 @@ import android.util.Base64;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +28,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class UsuarioWorker extends Worker {
 
@@ -52,6 +59,8 @@ public class UsuarioWorker extends Worker {
                 parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
             } else if (funcion.equals("anadirImagenUsuario")) {
                 parametrosJSON.put("url", getInputData().getString("url"));
+            } else if (funcion.equals("guardarToken")) {
+                parametrosJSON.put("token", getInputData().getString("token"));
             }
 
             urlConnection.setRequestProperty("Content-Type","application/json");
@@ -66,22 +75,20 @@ public class UsuarioWorker extends Worker {
             e.printStackTrace();
         }
 
-        if (!funcion.equals("anadirImagenUsuario")) {
-            int statusCode;
-            try {
-                statusCode = urlConnection.getResponseCode();
-                if (statusCode == 200) {
-                    BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        result += (line);
-                    }
-                    inputStream.close();
+        int statusCode;
+        try {
+            statusCode = urlConnection.getResponseCode();
+            if (statusCode == 200) {
+                BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += (line);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                inputStream.close();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         Data resultados = new Data.Builder()

@@ -38,9 +38,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -98,6 +102,30 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                 .setInputData(datos)
                 .build();
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+
+        //Guardamos el token del usuario en la db
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        Data datos = new Data.Builder()
+                                .putString("funcion", "guardarToken")
+                                .putString("nombreUsuario", nombreUsuario)
+                                .putString("token", token)
+                                .build();
+
+                        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
+                                .setInputData(datos)
+                                .build();
+                        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+                    }
+                });
 
         //Para añadir una foto de la receta
         imagenNuevaReceta = findViewById(R.id.imagenNuevaReceta);

@@ -42,6 +42,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -56,12 +60,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private String nombre;
-    private byte[] imagen;
     private ImageView iconoUsuario;
-    private String recetasUsuario;
-    private String[] recetasNombre;
-    private ArrayList<byte[]> recetasFoto;
-    private URL direccionImagenReceta;
+    private String[] recetasNombre = new String[0];
+    private ArrayList<byte[]> recetasFoto = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -111,7 +112,6 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                                 }
                             });
                         }
-
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
@@ -143,7 +143,6 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         });
 
         //Mostramos las recetas que el usuario ha creado
-
         RecyclerView rv = findViewById(R.id.usuarioRecetas);
 
         //Obtenemos las recetas creadas
@@ -159,46 +158,42 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                 .observe(UsuarioPerfil.this, status -> {
                     if (status != null && status.getState().isFinished()) {
                         String result = status.getOutputData().getString("resultado");
-                        if (result != null) {
-                            recetasNombre = result.split(",");
-                            recetasFoto = new ArrayList<>();
-                            for (String receta : recetasNombre) {
-                                //Obtener las imágenes de las recetas
-                                Data datos2 = new Data.Builder()
-                                        .putString("funcion", "obtenerImagenReceta")
-                                        .putString("nombreReceta", receta)
-                                        .build();
-
-                                OneTimeWorkRequest otwr2 = new OneTimeWorkRequest.Builder(RecetasWorker.class)
-                                        .setInputData(datos2)
-                                        .build();
-                                WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr2.getId())
-                                        .observe(UsuarioPerfil.this, status2 -> {
-                                            if (status2 != null && status2.getState().isFinished()) {
-                                                String result2 = status2.getOutputData().getString("resultado");
-                                                if (result2 != null) {
-                                                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                                                    StorageReference pathReference = storageRef.child(result2);
-                                                    final long ONE_MEGABYTE = 1024 * 1024;
-                                                    pathReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                        @Override
-                                                        public void onSuccess(byte[] bytes) {
-                                                            recetasFoto.add(bytes);
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
-                                WorkManager.getInstance(getApplicationContext()).enqueue(otwr2);
+                        if (!result.equals("")) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                JSONArray jsonArrayRecetas = jsonObject.getJSONArray("recetas");
+                                recetasNombre = jsonArrayRecetas.get(0).toString().split(",");
+                                JSONArray jsonArrayImagenes = jsonObject.getJSONArray("imagenes");
+                                recetasFoto = new ArrayList<>();
+                                for (int i = 0; i < jsonArrayImagenes.length(); i++) {
+                                    String url = jsonArrayImagenes.get(i).toString();
+                                    //Obtener las imágenes de las recetas
+                                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                                    StorageReference pathReference = storageRef.child(url);
+                                    pathReference.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                        @Override
+                                        public void onSuccess(byte[] bytes) {
+                                            recetasFoto.add(bytes);
+                                        }
+                                    });
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
-                            rv.setAdapter(eladaptador);
-
-                            GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
-                            rv.setLayoutManager(elLayoutRejillaIgual);
                         }
                     }
+
+                    //Solución para que no pete el código por no cargar las imágenes
+                    if (recetasFoto.isEmpty()) {
+                        for (int i = 0; i < recetasNombre.length; i++) {
+                            recetasFoto.add(new byte[0]);
+                        }
+                    }
+                    RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
+                    rv.setAdapter(eladaptador);
+
+                    GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
+                    rv.setLayoutManager(elLayoutRejillaIgual);
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr1);
 
