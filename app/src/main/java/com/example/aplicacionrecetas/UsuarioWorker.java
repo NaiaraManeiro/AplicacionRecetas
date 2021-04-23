@@ -44,6 +44,10 @@ public class UsuarioWorker extends Worker {
         String direccion = "http://ec2-54-167-31-169.compute-1.amazonaws.com/nmaneiro001/WEB/usuarios.php";
         HttpURLConnection urlConnection = null;
         String funcion = getInputData().getString("funcion");
+
+        if (funcion.equals("guardarToken") || funcion.equals("eliminarUsuario")) {
+            direccion = "http://ec2-54-167-31-169.compute-1.amazonaws.com/nmaneiro001/WEB/usuarios2.php";
+        }
         try {
             URL destino = new URL(direccion);
             urlConnection = (HttpURLConnection) destino.openConnection();

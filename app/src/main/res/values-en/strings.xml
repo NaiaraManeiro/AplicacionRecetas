@@ -57,4 +57,5 @@
     <string name="eliminarUsuario">Are you sure you want to delete your account?</string>
     <string name="guardar">Save</string>
     <string name="eliminar">Delete</string>
+    <string name="noIngrediente">Don\'t forget the ingredient!</string>
 </resources>

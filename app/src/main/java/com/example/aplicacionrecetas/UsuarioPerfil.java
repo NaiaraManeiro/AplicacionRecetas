@@ -89,32 +89,7 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
         //Cargamos la imagen del usuario
 
         iconoUsuario = findViewById(R.id.iconoUsuario);
-
-        Data datos = new Data.Builder()
-                .putString("funcion", "obtenerImagenUsuario")
-                .putString("nombreUsuario", nombre)
-                .build();
-
-        OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(UsuarioWorker.class)
-                .setInputData(datos)
-                .build();
-        WorkManager.getInstance(UsuarioPerfil.this).getWorkInfoByIdLiveData(otwr.getId())
-                .observe(UsuarioPerfil.this, status -> {
-                    if (status != null && status.getState().isFinished()) {
-                        String result = status.getOutputData().getString("resultado");
-                        if (result != null) {
-                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                            StorageReference pathReference = storageRef.child(result);
-                            pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Glide.with(getApplicationContext()).load(uri).into(iconoUsuario);
-                                }
-                            });
-                        }
-                    }
-                });
-        WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
+        obtenerImagenUsuario();
 
         TextView nomUsuario = findViewById(R.id.nombreUsuarioText);
         nomUsuario.setText(getString(R.string.nombre)+" "+nombre);
@@ -184,20 +159,24 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+
+
+                            if (!recetasNombre[0].equals("")) {
+                                //Solución para que no pete el código por no cargar las imágenes
+                                if (recetasFoto.isEmpty()) {
+                                    for (int i = 0; i < recetasNombre.length; i++) {
+                                        recetasFoto.add(new byte[0]);
+                                    }
+                                }
+                                RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
+                                rv.setAdapter(eladaptador);
+
+                                GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
+                                rv.setLayoutManager(elLayoutRejillaIgual);
+                            }
                         }
                     }
-
-                    //Solución para que no pete el código por no cargar las imágenes
-                    if (recetasFoto.isEmpty()) {
-                        for (int i = 0; i < recetasNombre.length; i++) {
-                            recetasFoto.add(new byte[0]);
-                        }
-                    }
-                    RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
-                    rv.setAdapter(eladaptador);
-
-                    GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
-                    rv.setLayoutManager(elLayoutRejillaIgual);
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr1);
 
@@ -261,6 +240,34 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onDismiss(DialogInterface dialog) {
+        obtenerImagenUsuario();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            Intent iMain = new Intent(this, MainActivity.class);
+            iMain.putExtra("inicio", true);
+            iMain.putExtra("nombre", nombre);
+            finish();
+            startActivity(iMain);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void idioma(String idioma) {
+        Locale nuevaloc = new Locale(idioma);
+        Locale.setDefault(nuevaloc);
+        Configuration configuration = getBaseContext().getResources().getConfiguration();
+        configuration.setLocale(nuevaloc);
+        configuration.setLayoutDirection(nuevaloc);
+        Context context = getBaseContext().createConfigurationContext(configuration);
+        getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+    }
+
+    private void obtenerImagenUsuario() {
         Data datos = new Data.Builder()
                 .putString("funcion", "obtenerImagenUsuario")
                 .putString("nombreUsuario", nombre)
@@ -287,29 +294,5 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            Intent iMain = new Intent(this, MainActivity.class);
-            iMain.putExtra("inicio", true);
-            iMain.putExtra("nombre", nombre);
-            finish();
-            startActivity(iMain);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void idioma(String idioma) {
-        Locale nuevaloc = new Locale(idioma);
-        Locale.setDefault(nuevaloc);
-        Configuration configuration = getBaseContext().getResources().getConfiguration();
-        configuration.setLocale(nuevaloc);
-        configuration.setLayoutDirection(nuevaloc);
-        Context context = getBaseContext().createConfigurationContext(configuration);
-        getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 }

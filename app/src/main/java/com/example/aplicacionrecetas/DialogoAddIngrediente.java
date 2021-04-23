@@ -60,18 +60,22 @@ public class DialogoAddIngrediente extends DialogFragment {
                 EditText cajaIngrediente = vista.findViewById(R.id.nombreIngrediente);
                 String ingrediente = cajaIngrediente.getText().toString();
 
-                Data datos = new Data.Builder()
-                        .putString("funcion", "anadirIngrediente")
-                        .putString("ingrediente", ingrediente)
-                        .build();
+                if (ingrediente.equals("")) {
+                    Toast.makeText(getActivity().getApplicationContext(),getString(R.string.noIngrediente), Toast.LENGTH_SHORT).show();
+                } else {
+                    Data datos = new Data.Builder()
+                            .putString("funcion", "anadirIngrediente")
+                            .putString("ingrediente", ingrediente)
+                            .build();
 
-                OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
-                        .setInputData(datos)
-                        .build();
-                WorkManager.getInstance(getContext()).enqueue(otwr);
+                    OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
+                            .setInputData(datos)
+                            .build();
+                    WorkManager.getInstance(getContext()).enqueue(otwr);
 
-                Toast.makeText(getActivity().getApplicationContext(),getString(R.string.ingredienteAnadido), Toast.LENGTH_SHORT).show();
-                cajaIngrediente.setText("");
+                    Toast.makeText(getActivity().getApplicationContext(),getString(R.string.ingredienteAnadido), Toast.LENGTH_SHORT).show();
+                    cajaIngrediente.setText("");
+                }
             }
         });
 
