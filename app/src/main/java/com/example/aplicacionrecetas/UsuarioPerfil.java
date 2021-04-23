@@ -162,7 +162,11 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                             try {
                                 JSONObject jsonObject = new JSONObject(result);
                                 JSONArray jsonArrayRecetas = jsonObject.getJSONArray("recetas");
-                                recetasNombre = jsonArrayRecetas.get(0).toString().split(",");
+                                recetasNombre = new String[jsonArrayRecetas.length()];
+                                for (int i = 0; i < jsonArrayRecetas.length(); i++) {
+                                    String receta = jsonArrayRecetas.get(i).toString();
+                                    recetasNombre[i] = receta;
+                                }
                                 JSONArray jsonArrayImagenes = jsonObject.getJSONArray("imagenes");
                                 recetasFoto = new ArrayList<>();
                                 for (int i = 0; i < jsonArrayImagenes.length(); i++) {

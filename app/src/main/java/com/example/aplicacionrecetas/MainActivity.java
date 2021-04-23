@@ -1,6 +1,5 @@
 package com.example.aplicacionrecetas;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -8,18 +7,10 @@ import androidx.preference.PreferenceManager;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -31,13 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -85,43 +69,9 @@ public class MainActivity extends AppCompatActivity {
         //Implementamos el buscador para las recetas
         obtenerRecetas();
         ListView listaBuscador = findViewById(R.id.listaBuscador);
-        listaBuscador.setVisibility(View.INVISIBLE);
-        adaptador = new BuscadorListAdapter(this, listaRecetas);
-        listaBuscador.setAdapter(adaptador);
-        buscador = findViewById(R.id.buscador);
-        buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                listaBuscador.setVisibility(View.VISIBLE);
-               return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                listaBuscador.setVisibility(View.VISIBLE);
-                adaptador.filter(newText);
-                return false;
-            }
-        });
-
-        buscador.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                listaBuscador.setVisibility(View.INVISIBLE);
-                return false;
-            }
-        });
-
-        listaBuscador.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                buscador.setQuery(listaRecetas.get(position), false);
-                listaBuscador.setVisibility(View.INVISIBLE);
-            }
-        });
 
         //Funcionamiento botón "buscar receta"
         Button buscarReceta = findViewById(R.id.botonBuscarRecetas);
-        Intent iInfoReceta = new Intent(this, InfoReceta.class);
         buscarReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,19 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 if (nomReceta.equals("")) {
                     Toast.makeText(getApplicationContext(), getString(R.string.buscadorVacio), Toast.LENGTH_SHORT).show();
                 } else {
-                    String nombreReceta = existeReceta(nomReceta);
-                    buscador.setQuery("", false);
-                    if (nombreReceta != null) {
-                        iInfoReceta.putExtra("nombreReceta", nombreReceta);
-                        startActivity(iInfoReceta);
-                    } else {
-                        DialogFragment dialogoNoReceta = new DialogoNoExisteReceta();
-                        Bundle bundle = new Bundle();
-                        bundle.putBoolean("inicioSesion",iniciarSesion);
-                        dialogoNoReceta.setArguments(bundle);
-                        dialogoNoReceta.show(getSupportFragmentManager(), "noExisteReceta");
-                    }
-                    listaBuscador.setVisibility(View.INVISIBLE);
+                    existeReceta(nomReceta);
                 }
             }
         });
@@ -221,12 +159,46 @@ public class MainActivity extends AppCompatActivity {
                         String result = status.getOutputData().getString("resultado");
                         String[] recetas = result.split(",");
                         listaRecetas.addAll(Arrays.asList(recetas));
+                        ListView listaBuscador = findViewById(R.id.listaBuscador);
+                        adaptador = new BuscadorListAdapter(this, listaRecetas);
+                        listaBuscador.setVisibility(View.INVISIBLE);
+                        listaBuscador.setAdapter(adaptador);
+                        buscador = findViewById(R.id.buscador);
+                        buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                listaBuscador.setVisibility(View.VISIBLE);
+                                return false;
+                            }
+                            @Override
+                            public boolean onQueryTextChange(String newText) {
+                                listaBuscador.setVisibility(View.VISIBLE);
+                                adaptador.filter(newText);
+                                return false;
+                            }
+                        });
+
+                        buscador.setOnCloseListener(new SearchView.OnCloseListener() {
+                            @Override
+                            public boolean onClose() {
+                                listaBuscador.setVisibility(View.INVISIBLE);
+                                return false;
+                            }
+                        });
+
+                        listaBuscador.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                buscador.setQuery(listaRecetas.get(position), false);
+                                listaBuscador.setVisibility(View.INVISIBLE);
+                            }
+                        });
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
     }
 
-    private String existeReceta(String nombre) {
+    private void existeReceta(String nombre) {
         Data datos = new Data.Builder()
                 .putString("funcion", "existeReceta")
                 .putString("nombreReceta", nombre)
@@ -239,13 +211,23 @@ public class MainActivity extends AppCompatActivity {
                 .observe(MainActivity.this, status -> {
                     if (status != null && status.getState().isFinished()) {
                         String result = status.getOutputData().getString("resultado");
+                        buscador.setQuery("", false);
                         if (nombre.toLowerCase().equals(result.toLowerCase())) {
-                            existeNombreReceta = result;
+                            Intent iInfoReceta = new Intent(this, InfoReceta.class);
+                            iInfoReceta.putExtra("nombreReceta", nombre);
+                            startActivity(iInfoReceta);
+                        } else {
+                            DialogFragment dialogoNoReceta = new DialogoNoExisteReceta();
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("inicioSesion",iniciarSesion);
+                            dialogoNoReceta.setArguments(bundle);
+                            dialogoNoReceta.show(getSupportFragmentManager(), "noExisteReceta");
                         }
+                        ListView listaBuscador = findViewById(R.id.listaBuscador);
+                        listaBuscador.setVisibility(View.INVISIBLE);
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);
-        return existeNombreReceta;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

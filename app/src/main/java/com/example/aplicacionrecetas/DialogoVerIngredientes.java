@@ -107,13 +107,6 @@ public class DialogoVerIngredientes extends DialogFragment {
                             .setInputData(datos)
                             .build();
                     WorkManager.getInstance(getContext()).enqueue(otwr);
-
-                    /*BaseDatos GestorDB = new BaseDatos (getActivity(), "RecetasBD", null, 1);
-                    SQLiteDatabase bd = GestorDB.getWritableDatabase();
-                    ContentValues modificacion = new ContentValues();
-                    modificacion.put("Ingredientes", ingredientesNuevos);
-                    bd.update("Receta", modificacion, "Nombre='NewReceta'", null);
-                    bd.close();*/
                 }
             }
         });
