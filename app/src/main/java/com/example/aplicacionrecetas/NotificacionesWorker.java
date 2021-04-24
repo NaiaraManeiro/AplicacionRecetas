@@ -19,20 +19,19 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class UsuarioWorker extends Worker {
+public class NotificacionesWorker extends Worker {
 
     private String result = "";
 
-    public UsuarioWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    public NotificacionesWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        String direccion = "http://ec2-54-167-31-169.compute-1.amazonaws.com/nmaneiro001/WEB/usuarios.php";
+        String direccion = "http://ec2-54-167-31-169.compute-1.amazonaws.com/nmaneiro001/WEB/mensajes.php";
         HttpURLConnection urlConnection = null;
-        String funcion = getInputData().getString("funcion");
 
         try {
             URL destino = new URL(direccion);
@@ -43,15 +42,9 @@ public class UsuarioWorker extends Worker {
             urlConnection.setDoOutput(true);
 
             JSONObject parametrosJSON = new JSONObject();
-            parametrosJSON.put("funcion", funcion);
-            parametrosJSON.put("nombreUsuario", getInputData().getString("nombreUsuario"));
-            if (funcion.equals("anadirRecetaUsuario")) {
-                parametrosJSON.put("nombreReceta", getInputData().getString("nombreReceta"));
-            } else if (funcion.equals("anadirImagenUsuario")) {
-                parametrosJSON.put("url", getInputData().getString("url"));
-            } else if (funcion.equals("guardarToken")) {
-                parametrosJSON.put("token", getInputData().getString("token"));
-            }
+            parametrosJSON.put("token", getInputData().getString("token"));
+            parametrosJSON.put("title", getInputData().getString("title"));
+            parametrosJSON.put("body", getInputData().getString("body"));
 
             urlConnection.setRequestProperty("Content-Type","application/json");
 
@@ -82,8 +75,8 @@ public class UsuarioWorker extends Worker {
         }
 
         Data resultados = new Data.Builder()
-                    .putString("resultado", result)
-                    .build();
+                .putString("resultado", result)
+                .build();
 
         return Result.success(resultados);
     }

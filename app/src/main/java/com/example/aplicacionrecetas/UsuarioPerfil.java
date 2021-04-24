@@ -3,9 +3,6 @@ package com.example.aplicacionrecetas;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,16 +15,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.AbstractWindowedCursor;
-import android.database.Cursor;
-import android.database.CursorWindow;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +28,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -46,17 +35,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
-import javax.net.ssl.HttpsURLConnection;
 
 public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private String nombre;
@@ -153,27 +134,19 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                                         @Override
                                         public void onSuccess(byte[] bytes) {
                                             recetasFoto.add(bytes);
+
+                                            if (recetasFoto.size() == recetasNombre.length) {
+                                                RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
+                                                rv.setAdapter(eladaptador);
+
+                                                GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(UsuarioPerfil.this,2, GridLayoutManager.HORIZONTAL,false);
+                                                rv.setLayoutManager(elLayoutRejillaIgual);
+                                            }
                                         }
                                     });
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                            }
-
-
-
-                            if (!recetasNombre[0].equals("")) {
-                                //Solución para que no pete el código por no cargar las imágenes
-                                if (recetasFoto.isEmpty()) {
-                                    for (int i = 0; i < recetasNombre.length; i++) {
-                                        recetasFoto.add(new byte[0]);
-                                    }
-                                }
-                                RecetasUsuarioRecyclerAdapter eladaptador = new RecetasUsuarioRecyclerAdapter(recetasNombre, recetasFoto);
-                                rv.setAdapter(eladaptador);
-
-                                GridLayoutManager elLayoutRejillaIgual= new GridLayoutManager(this,2, GridLayoutManager.HORIZONTAL,false);
-                                rv.setLayoutManager(elLayoutRejillaIgual);
                             }
                         }
                     }
@@ -290,7 +263,6 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
                                 }
                             });
                         }
-
                     }
                 });
         WorkManager.getInstance(getApplicationContext()).enqueue(otwr);

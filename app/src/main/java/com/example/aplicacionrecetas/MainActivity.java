@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private final ArrayList<String> listaRecetas = new ArrayList<>();
     private SearchView buscador;
     private String nombreUsuario;
-    private String existeNombreReceta = null;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override

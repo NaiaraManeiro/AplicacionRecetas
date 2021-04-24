@@ -27,9 +27,5 @@ public class RecetasUsuarioViewHolder extends RecyclerView.ViewHolder {
                 itemView.getContext().startActivity(iInfoReceta);
             }
         });
-
-
-
-
     }
 }

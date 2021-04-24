@@ -65,6 +65,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
     private String nombreReceta;
     private static final String STATE_PASOS = "pasosReceta";
     private String pasosReceta = "";
+    private String token = "";
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -112,7 +113,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                             return;
                         }
                         // Get new FCM registration token
-                        String token = task.getResult();
+                        token = task.getResult();
 
                         Data datos = new Data.Builder()
                                 .putString("funcion", "guardarToken")
@@ -266,18 +267,17 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                                         deleteImageFirebase();
 
                                         //Añadir una notificación
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                            NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
-                                            elBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.recetaanadida))
-                                                    .setSmallIcon(R.drawable.suma)
-                                                    .setContentTitle(getText(R.string.notiRecetaAnadida))
-                                                    .setContentText(getString(R.string.notiLaReceta)+" '"+nombreReceta+"' "+getString(R.string.notiHaSidoAñadida))
-                                                    .setVibrate(new long[]{0, 1000, 500, 1000})
-                                                    .setAutoCancel(true);
-                                            elCanal.enableLights(true);
-                                            elManager.createNotificationChannel(elCanal);
-                                        }
-                                        elManager.notify(1, elBuilder.build());
+
+                                        Data datos1 = new Data.Builder()
+                                                .putString("token", token)
+                                                .putString("title", getString(R.string.notiRecetaAnadida))
+                                                .putString("body", getString(R.string.notiLaReceta)+" '"+nombreReceta+"' "+getString(R.string.notiHaSidoAñadida))
+                                                .build();
+
+                                        OneTimeWorkRequest otwr1 = new OneTimeWorkRequest.Builder(NotificacionesWorker.class)
+                                                .setInputData(datos1)
+                                                .build();
+                                        WorkManager.getInstance(getApplicationContext()).enqueue(otwr1);
 
                                         finish();
 
