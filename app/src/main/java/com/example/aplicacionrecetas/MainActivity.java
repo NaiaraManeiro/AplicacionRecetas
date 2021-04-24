@@ -7,6 +7,8 @@ import androidx.preference.PreferenceManager;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,6 +145,27 @@ public class MainActivity extends AppCompatActivity {
                 listaBuscador.setVisibility(View.INVISIBLE);
             }
         });
+
+        TextView musica = findViewById(R.id.textMusic);
+        if (isMyServiceRunning(MusicService.class)) {
+            musica.setText(R.string.pause);
+        } else {
+            musica.setText(R.string.play);
+        }
+
+        ImageView playPause = findViewById(R.id.playPause);
+        playPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isMyServiceRunning(MusicService.class)) {
+                    musica.setText(R.string.play);
+                    stopService(new Intent(MainActivity.this, MusicService.class));
+                } else {
+                    musica.setText(R.string.pause);
+                    startService(new Intent(MainActivity.this, MusicService.class));
+                }
+            }
+        });
     }
 
     private void obtenerRecetas(){
@@ -238,5 +262,15 @@ public class MainActivity extends AppCompatActivity {
         configuration.setLayoutDirection(nuevaloc);
         Context context = getBaseContext().createConfigurationContext(configuration);
         getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

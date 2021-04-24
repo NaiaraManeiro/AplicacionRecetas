@@ -59,4 +59,6 @@
     <string name="locationEN" translatable="false">en</string>
     <string name="eliminar">Eliminar</string>
     <string name="noIngrediente">¡Qué no se te olvide el ingrediente!</string>
+    <string name="play" translatable="false">Play</string>
+    <string name="pause" translatable="false">Pause</string>
 </resources>
