@@ -208,7 +208,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                             .putString("funcion", "anadirReceta")
                             .putString("nombreReceta", nombreReceta)
                             .putString("PasosSeguir", pasos)
-                            .putString("Imagen", "/Recetas/"+nombreReceta+".png")
+                            .putString("Imagen", "/Recetas/"+nombreReceta.replaceAll("\\s+", "")+".png")
                             .build();
 
                     OneTimeWorkRequest otwr = new OneTimeWorkRequest.Builder(RecetasWorker.class)
@@ -236,7 +236,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                                             @Override
                                             public void onSuccess(byte[] bytes) {
                                                 //--Subimos la foto con el nuevo nombre
-                                                StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta+".png");
+                                                StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta.replaceAll("\\s+", "")+".png");
                                                 UploadTask uploadTask = spaceRef.putBytes(bytes);
                                                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                     @Override
@@ -252,7 +252,7 @@ public class AnadirReceta extends AppCompatActivity implements DialogInterface.O
                                                     @Override
                                                     public void onSuccess(byte[] bytes) {
                                                         //--Subimos la foto con el nuevo nombre
-                                                        StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta+".png");
+                                                        StorageReference spaceRef = storageRef.child("/Recetas/"+nombreReceta.replaceAll("\\s+", "")+".png");
                                                         UploadTask uploadTask = spaceRef.putBytes(bytes);
                                                         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                                             @Override

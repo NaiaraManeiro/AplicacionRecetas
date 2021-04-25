@@ -171,11 +171,11 @@ public class DialogoGaleriaCamara extends DialogFragment {
                         .putString("url", url)
                         .build();
             } else if (usuarioReceta.equals("usuario")) {
-                url = "/Usuarios/"+usuarioNombre+".png";
+                url = "/Usuarios/"+usuarioNombre.replaceAll("\\s+", "")+".png";
                 datos = new Data.Builder()
                         .putString("funcion", "anadirImagenUsuario")
                         .putString("url", url)
-                        .putString("nombreUsuario", usuarioNombre)
+                        .putString("nombreUsuario", usuarioNombre.replaceAll("\\s+", ""))
                         .build();
             }
 
