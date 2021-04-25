@@ -61,4 +61,23 @@
     <string name="noIngrediente">¡Qué no se te olvide el ingrediente!</string>
     <string name="play" translatable="false">Play</string>
     <string name="pause" translatable="false">Pause</string>
+    <string name="calendario">Calendario</string>
+    <string name="mostrarEventos">Mostrar eventos</string>
+    <string name="addEvent">Añadir evento</string>
+    <string name="noEventos">No hay eventos creados.</string>
+    <string name="titulo">Título</string>
+    <string name="descripcion">Descripción</string>
+    <string name="datosEvento">Escriba los datos del evento:</string>
+    <string name="fechaEvento">Fecha (dd-mm-yyyy)</string>
+    <string name="noTitulo">¡No te olvides del título!</string>
+    <string name="noDescripcion">¡No te olvides de la descripción!</string>
+    <string name="noDate">¡No te olvides de la fecha!</string>
+    <string name="formatoFecha">La fecha tiene que tener el formato \'dd-mm-yyyy\'.</string>
+    <string name="eventoAnadido">¡Evento añadido!</string>
+    <string name="editarEvento">Editar evento</string>
+    <string name="editarDatosEventos">Selecciona un evento y edita sus datos:</string>
+    <string name="eventoEditado">¡Evento editado!</string>
+    <string name="eliminarEvento">Eliminar evento</string>
+    <string name="eliminarEventoTexto">Selecciona el evento que quieras eliminar:</string>
+    <string name="eventoEliminado">¡Evento eliminado!</string>
 </resources>

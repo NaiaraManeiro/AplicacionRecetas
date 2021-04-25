@@ -10,6 +10,9 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +21,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 
@@ -206,6 +211,9 @@ public class UsuarioPerfil extends AppCompatActivity implements DialogInterface.
             bundle.putString("nombreUsuario", nombre);
             dialogoEliminar.setArguments(bundle);
             dialogoEliminar.show(getSupportFragmentManager(), "eliminar");
+        } else if (id == R.id.calendar) {
+            Intent i = new Intent(this, Calendario.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }

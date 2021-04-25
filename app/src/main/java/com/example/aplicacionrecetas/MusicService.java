@@ -22,7 +22,6 @@ public class MusicService extends Service {
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Toast.makeText(this, "Music Service started by user.", Toast.LENGTH_LONG).show();
         musicPlayer.start();
         return START_STICKY;
     }
@@ -30,6 +29,5 @@ public class MusicService extends Service {
     public void onDestroy() {
         super.onDestroy();
         musicPlayer.stop();
-        //Toast.makeText(this, "Music destroyed by user.", Toast.LENGTH_LONG).show();
     }
 }

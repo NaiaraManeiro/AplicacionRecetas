@@ -58,4 +58,23 @@
     <string name="guardar">Save</string>
     <string name="eliminar">Delete</string>
     <string name="noIngrediente">Don\'t forget the ingredient!</string>
+    <string name="calendario">Calendar</string>
+    <string name="mostrarEventos">Show events</string>
+    <string name="addEvent">Add event</string>
+    <string name="noEventos">There aren\'t created events.</string>
+    <string name="titulo">Title</string>
+    <string name="descripcion">Description</string>
+    <string name="datosEvento">Write event data:</string>
+    <string name="fechaEvento">Date (dd-mm-yyyy)</string>
+    <string name="noTitulo">Don\'t forget the title!</string>
+    <string name="noDescripcion">Don\'t forget the description!</string>
+    <string name="noDate">Don\'t forget the date!</string>
+    <string name="formatoFecha">The date format has to be \'dd-mm-yyyy\'.</string>
+    <string name="eventoAnadido">Event added!</string>
+    <string name="editarEvento">Update event</string>
+    <string name="editarDatosEventos">Select an event and update its data:</string>
+    <string name="eventoEditado">Event updated!</string>
+    <string name="eliminarEvento">Delete event</string>
+    <string name="eliminarEventoTexto">Select the event you want to delete:</string>
+    <string name="eventoEliminado">Event deleted!</string>
 </resources>
