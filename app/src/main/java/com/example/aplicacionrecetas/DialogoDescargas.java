@@ -95,7 +95,7 @@ public class DialogoDescargas extends DialogFragment {
             }
         });
 
-        //Para crear la receta en drive
+        //Para subir la receta a drive
         ImageView drive = vista.findViewById(R.id.imagenDrive);
         drive.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

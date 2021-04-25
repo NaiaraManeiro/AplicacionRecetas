@@ -65,12 +65,14 @@ public class EditarEventosFragment extends Fragment {
         }
 
         lalista = getActivity().findViewById(R.id.editarListaEventos);
+        //Obtenemos los eventos del calendario
         rellenarLista();
 
         EditText tituloCaja = getActivity().findViewById(R.id.editarTituloEvento);
         EditText descripcionCaja = getActivity().findViewById(R.id.editDescripcionEvento);
         EditText fechaCaja = getActivity().findViewById(R.id.editDateEvent);
 
+        //Mostramos la información del evento seleccionado
         lalista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
@@ -81,6 +83,7 @@ public class EditarEventosFragment extends Fragment {
             }
         });
 
+        //Editamos la información del evento seleccionado
         Button aditarEvento = getActivity().findViewById(R.id.editarEvento);
         aditarEvento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +136,6 @@ public class EditarEventosFragment extends Fragment {
     }
 
     private void rellenarLista() {
-        //Rellenar la lista
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, CODIGO_DE_PERMISO);
         } else {

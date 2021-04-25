@@ -77,4 +77,5 @@
     <string name="eliminarEvento">Delete event</string>
     <string name="eliminarEventoTexto">Select the event you want to delete:</string>
     <string name="eventoEliminado">Event deleted!</string>
+    <string name="guardarDescarga">Select where to save the recipe:</string>
 </resources>

@@ -80,4 +80,5 @@
     <string name="eliminarEvento">Eliminar evento</string>
     <string name="eliminarEventoTexto">Selecciona el evento que quieras eliminar:</string>
     <string name="eventoEliminado">¡Evento eliminado!</string>
+    <string name="guardarDescarga">Selecciona donde guardar la receta:</string>
 </resources>

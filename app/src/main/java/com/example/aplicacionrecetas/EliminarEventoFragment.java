@@ -2,7 +2,6 @@ package com.example.aplicacionrecetas;
 
 import android.Manifest;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,8 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +27,8 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 public class EliminarEventoFragment extends Fragment {
 
@@ -64,8 +59,10 @@ public class EliminarEventoFragment extends Fragment {
         }
 
         lalista = getActivity().findViewById(R.id.eliminarListaEventos);
+        //Obtenemos los eventos del calendario
         rellenarLista();
 
+        //Eliminamos el evento seleccionado
         lalista.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
@@ -81,7 +78,6 @@ public class EliminarEventoFragment extends Fragment {
     }
 
     private void rellenarLista() {
-        //Rellenar la lista
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, CODIGO_DE_PERMISO);
         } else {

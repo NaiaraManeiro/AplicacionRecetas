@@ -13,12 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -31,11 +29,9 @@ import java.util.Locale;
 
 public class MostrarEventosFragment extends Fragment {
 
-    private ArrayList<String> titulos = new ArrayList<>();
-    private ArrayList<String> descripciones = new ArrayList<>();
+    private final ArrayList<String> titulos = new ArrayList<>();
+    private final ArrayList<String> descripciones = new ArrayList<>();
     static final int CODIGO_DE_PERMISO = 2;
-    private static final String STATE_TITULOS = "titulos";
-    private static final String STATE_DESCRIPCIONES = "descripciones";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,15 +52,11 @@ public class MostrarEventosFragment extends Fragment {
             idioma(getString(R.string.locationEN));
         }
 
-        if (savedInstanceState != null) {
-            titulos = savedInstanceState.getStringArrayList(STATE_TITULOS);
-            descripciones = savedInstanceState.getStringArrayList(STATE_DESCRIPCIONES);
-        }
-
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, CODIGO_DE_PERMISO);
         } else {
 
+            //Obtenemos los eventos del calendario
             Cursor cursor = getContext().getContentResolver().query(CalendarContract.Events.CONTENT_URI, null, null, null, null);
 
             while (cursor.moveToNext()) {
@@ -102,13 +94,6 @@ public class MostrarEventosFragment extends Fragment {
             }
 
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList(STATE_TITULOS, titulos);
-        outState.putStringArrayList(STATE_DESCRIPCIONES, descripciones);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

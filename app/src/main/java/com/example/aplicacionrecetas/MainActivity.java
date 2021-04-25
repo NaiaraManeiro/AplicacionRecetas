@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Para manejar la música
         TextView musica = findViewById(R.id.textMusic);
         if (isMyServiceRunning(MusicService.class)) {
             musica.setText(R.string.pause);
@@ -264,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         getBaseContext().getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 
+    //Para saber si la música está en marcha o no
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
