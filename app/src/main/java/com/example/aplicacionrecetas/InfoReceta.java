@@ -65,7 +65,6 @@ public class InfoReceta extends AppCompatActivity {
     private String imagen;
     private String ingredientes;
     private String pasos;
-    private static final int COD_NUEVO_FICHERO = 40;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -154,50 +153,15 @@ public class InfoReceta extends AppCompatActivity {
         descargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TITLE, recetaNombre+".txt");
-                startActivityForResult(intent, COD_NUEVO_FICHERO);
+                DialogFragment dialogoDescargas = new DialogoDescargas();
+                Bundle b = new Bundle();
+                b.putString("nombreReceta", recetaNombre);
+                b.putString("ingredientes", ingredientes);
+                b.putString("pasos", pasos);
+                dialogoDescargas.setArguments(b);
+                dialogoDescargas.show(getSupportFragmentManager(), "verIngrediente");
             }
         });
-    }
-
-    //Para la descarga de la receta
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == COD_NUEVO_FICHERO && resultCode == Activity.RESULT_OK) {
-            Uri uri;
-            if (data != null) {
-                uri = data.getData();
-                try {
-                    ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(uri, "w");
-                    OutputStreamWriter ficheroexterno = new OutputStreamWriter(new FileOutputStream(pfd.getFileDescriptor()));
-                    ficheroexterno.write("Nombre de la receta: "+recetaNombre+"\n");
-                    ficheroexterno.write("Ingredientes: "+ingredientes+"\n");
-                    ficheroexterno.write("Pasos a seguir: "+pasos+"\n");
-                    ficheroexterno.close();
-                    pfd.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            NotificationManager elManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this, "IdCanal");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel elCanal = new NotificationChannel("IdCanal", "NombreCanal", NotificationManager.IMPORTANCE_DEFAULT);
-                elBuilder.setSmallIcon(R.drawable.descarga)
-                        .setContentTitle(getText(R.string.recetaDescargada))
-                        .setContentText(getString(R.string.notiLaReceta)+" '"+recetaNombre+"' "+getString(R.string.notiDescarga))
-                        .setVibrate(new long[]{0, 1000, 500, 1000})
-                        .setAutoCancel(true);
-                elCanal.enableLights(true);
-                elManager.createNotificationChannel(elCanal);
-            }
-            elManager.notify(1, elBuilder.build());
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

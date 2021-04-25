@@ -70,9 +70,11 @@ public class DialogoVerIngredientes extends DialogFragment {
                             if (!result.equals("")) {
                                 ArrayList<String> arrayIngredientes = new ArrayList<>(Arrays.asList(result.split(",")));
                                 ingredientes = arrayIngredientes.toArray(new CharSequence[arrayIngredientes.size()]);
-                            }
 
-                            mostrarIngredientes(builder);
+                                if (ingredientes.length == arrayIngredientes.size()) {
+                                    mostrarIngredientes(builder);
+                                }
+                            }
                         }
                     });
             WorkManager.getInstance(getContext()).enqueue(otwr);
